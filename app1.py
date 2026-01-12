@@ -28,7 +28,7 @@ CONSULTORES = sorted([
 OPCOES_STATUS = [
     "HP", "E-mail", "WhatsApp", 
     "Treinamento", "Reunião",
-    "Almoço", "Ausente", "Saída rápida"
+    "Almoço", "Ausente", "Saída rápida", 
 ]
 
 GIF_BASTAO = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3Uwazd5cnNra2oxdDkydjZkcHdqcWN2cng0Y2N0cmNmN21vYXVzMiZlcD12MV9pbnRlcm5uYWxfZ2lmX2J5X2lkJmN0PWc/3rXs5J0hZkXwTZjuvM/giphy.gif"
