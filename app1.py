@@ -1,5 +1,5 @@
 # ============================================
-# CONTROLE DE BASTÃO CESUPE 2026
+# CONTROLE DE BASTÃO Informática 2026
 # Versão: Completa sem Integrações Externas
 # ============================================
 import streamlit as st
@@ -32,28 +32,13 @@ CONSULTORES = sorted([
 ])
 
 # --- Constantes de Opções ---
-REG_USUARIO_OPCOES = ["Cartório", "Gabinete", "Externo"]
+REG_USUARIO_OPCOES = ["Cartório", "Externo"]
 REG_SISTEMA_OPCOES = ["Conveniados", "Outros", "Eproc", "Themis", "JPE", "SIAP"]
 REG_CANAL_OPCOES = ["Presencial", "Telefone", "Email", "Whatsapp", "Outros"]
-REG_DESFECHO_OPCOES = ["Resolvido - Cesupe", "Escalonado"]
-
-CAMARAS_DICT = {
-    "Cartório da 1ª Câmara Cível": "caciv1@tjmg.jus.br", "Cartório da 2ª Câmara Cível": "caciv2@tjmg.jus.br",
-    "Cartório da 3ª Câmara Cível": "caciv3@tjmg.jus.br", "Cartório da 4ª Câmara Cível": "caciv4@tjmg.jus.br",
-    "Cartório da 5ª Câmara Cível": "caciv5@tjmg.jus.br", "Cartório da 6ª Câmara Cível": "caciv6@tjmg.jus.br",
-    "Cartório da 7ª Câmara Cível": "caciv7@tjmg.jus.br", "Cartório da 8ª Câmara Cível": "caciv8@tjmg.jus.br",
-    "Cartório da 9ª Câmara Cível": "caciv9@tjmg.jus.br", "Cartório da 10ª Câmara Cível": "caciv10@tjmg.jus.br",
-    "Cartório da 11ª Câmara Cível": "caciv11@tjmg.jus.br", "Cartório da 12ª Câmara Cível": "caciv12@tjmg.jus.br",
-    "Cartório da 13ª Câmara Cível": "caciv13@tjmg.jus.br", "Cartório da 14ª Câmara Cível": "caciv14@tjmg.jus.br",
-    "Cartório da 15ª Câmara Cível": "caciv15@tjmg.jus.br", "Cartório da 16ª Câmara Cível": "caciv16@tjmg.jus.br",
-    "Cartório da 17ª Câmara Cível": "caciv17@tjmg.jus.br", "Cartório da 18ª Câmara Cível": "caciv18@tjmg.jus.br",
-    "Cartório da 19ª Câmara Cível": "caciv19@tjmg.jus.br", "Cartório da 20ª Câmara Cível": "caciv20@tjmg.jus.br",
-    "Cartório da 21ª Câmara Cível": "caciv21@tjmg.jus.br"
-}
-CAMARAS_OPCOES = sorted(list(CAMARAS_DICT.keys()))
+REG_DESFECHO_OPCOES = ["Resolvido - Informática", "Escalonado"]
 
 OPCOES_ATIVIDADES_STATUS = ["HP", "E-mail", "WhatsApp Plantão", "Treinamento", "Homologação", "Redação Documentos", "Outros"]
-OPCOES_PROJETOS = ["Soma", "Treinamentos Eproc", "Manuais Eproc", "Cartilhas Gabinetes", "Notebook Lm", "Inteligência artifical cartórios"]
+
 
 # GIFs e Recursos
 GIF_BASTAO_HOLDER = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3Uwazd5cnNra2oxdDkydjZkcHdqcWN2cng0Y2N0cmNmN21vYXVzMiZlcD12MV9pbnRlcm5uYWxfZ2lmX2J5X2lkJmN0PWc/3rXs5J0hZkXwTZjuvM/giphy.gif"
@@ -95,7 +80,6 @@ def init_session_state():
         'simon_level': 1,
         'simon_ranking': [],
         'daily_logs': [],
-        'last_jira_number': "",
         'success_message': None,
         'success_message_time': None,
     }
@@ -331,22 +315,6 @@ def render_fireworks():
     """
     st.markdown(fireworks_css, unsafe_allow_html=True)
 
-def gerar_html_checklist(consultor_nome, camara_nome, data_sessao_formatada):
-    consultor_formatado = f"@{consultor_nome}" if not consultor_nome.startswith("@") else consultor_nome
-    html_template = f"""
-<!DOCTYPE html>
-<html lang="pt-br">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Acompanhamento de Sessão - {camara_nome}</title></head>
-<body><div style="font-family: Arial, sans-serif; padding: 20px;">
-<h2>Checklist Gerado para {camara_nome}</h2>
-<p>Responsável: {consultor_formatado}</p>
-<p>Data: {data_sessao_formatada}</p>
-<p><em>(HTML gerado pelo sistema - pronto para uso)</em></p>
-</div></body></html>
-    """
-    return html_template
-
 def gerar_pdf_relatorio(logs_filtrados):
     """Gera PDF com os registros"""
     from reportlab.lib.pagesizes import A4
@@ -392,7 +360,7 @@ def gerar_pdf_relatorio(logs_filtrados):
     )
     
     # Cabeçalho
-    elements.append(Paragraph("RELATÓRIO DE REGISTROS - CESUPE", titulo_style))
+    elements.append(Paragraph("RELATÓRIO DE REGISTROS - Informática", titulo_style))
     elements.append(Paragraph("Sistema de Controle de Bastão", corpo_style))
     elements.append(Spacer(1, 0.5*cm))
     
@@ -452,8 +420,6 @@ def gerar_pdf_relatorio(logs_filtrados):
                 ["Canal:", str(log.get('canal', 'N/A'))],
                 ["Desfecho:", str(log.get('desfecho', 'N/A'))]
             ])
-            if log.get('jira'):
-                dados_basicos.append(["Jira:", f"CESUPE-{log.get('jira')}"])
         
         elif 'inicio' in log and 'tempo' in log:
             dados_basicos.extend([
@@ -494,7 +460,7 @@ def gerar_pdf_relatorio(logs_filtrados):
     # Rodapé final
     elements.append(Spacer(1, 1*cm))
     elements.append(Paragraph("___", corpo_style))
-    elements.append(Paragraph(f"Relatório gerado pelo Sistema de Controle de Bastão - CESUPE/TJMG", 
+    elements.append(Paragraph(f"Relatório gerado pelo Sistema de Controle de Bastão - Informática/TJMG", 
                              ParagraphStyle('Footer', parent=styles['Normal'], fontSize=8, textColor=colors.grey)))
     
     # Gera PDF
@@ -615,7 +581,7 @@ def toggle_view(view_name):
 # INTERFACE PRINCIPAL
 # ============================================
 
-st.set_page_config(page_title="Controle Bastão Cesupe 2026", layout="wide", page_icon="🥂")
+st.set_page_config(page_title="Controle Bastão Informática 2026", layout="wide", page_icon="🥂")
 init_session_state()
 st.components.v1.html("<script>window.scrollTo(0, 0);</script>", height=0)
 render_fireworks()
@@ -625,7 +591,7 @@ c_topo_esq, c_topo_dir = st.columns([2, 1], vertical_alignment="bottom")
 with c_topo_esq:
     st.markdown(f"""<div style="display: flex; align-items: center; gap: 15px;">
     <h1 style="margin: 0; padding: 0; font-size: 2.2rem; color: #FFD700; text-shadow: 1px 1px 2px #B8860B;">
-    Controle Bastão Cesupe 2026 {BASTAO_EMOJI}</h1>
+    Controle Bastão Informática 2026 {BASTAO_EMOJI}</h1>
     <img src="{GIF_BASTAO_HOLDER}" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #FFD700;">
     </div>""", unsafe_allow_html=True)
 
@@ -743,12 +709,11 @@ with col_principal:
     st.markdown("#### ")
     st.markdown("**Ações:**")
     
-    row1_c1, row1_c2, row1_c3 = st.columns(3)
+    row1_c1, row1_c2 = st.columns(2)
     row2_c1, row2_c2, row2_c3, row2_c4, row2_c5 = st.columns(5)
     
     row1_c1.button('🎯 Passar', on_click=rotate_bastao, use_container_width=True, help='Passa o bastão.', type='primary')
     row1_c2.button('📋 Atividades', on_click=toggle_view, args=('menu_atividades',), use_container_width=True)
-    row1_c3.button('🏗️ Projeto', on_click=toggle_view, args=('menu_projetos',), use_container_width=True)
     
     row2_c1.button('📅 Reunião', on_click=toggle_view, args=('menu_reuniao',), use_container_width=True)
     row2_c2.button('🍽️ Almoço', on_click=update_status, args=('Almoço', True,), use_container_width=True)
@@ -784,21 +749,6 @@ with col_principal:
                     st.session_state.active_view = None
                     st.rerun()
     
-    if st.session_state.active_view == 'menu_projetos':
-        with st.container(border=True):
-            st.markdown("### Selecione o Projeto")
-            projeto_escolhido = st.selectbox("Projeto:", OPCOES_PROJETOS)
-            col_p1, col_p2 = st.columns(2)
-            with col_p1:
-                if st.button("Confirmar Projeto", type="primary", use_container_width=True):
-                    status_final = f"Projeto: {projeto_escolhido}"
-                    update_status(status_final)
-                    st.session_state.active_view = None
-                    st.rerun()
-            with col_p2:
-                if st.button("Cancelar", use_container_width=True, key='cancel_proj'):
-                    st.session_state.active_view = None
-                    st.rerun()
     
     if st.session_state.active_view == 'menu_reuniao':
         with st.container(border=True):
@@ -843,45 +793,21 @@ with col_principal:
     st.markdown("---")
     
     # Ferramentas
-    c_tool1, c_tool2, c_tool3, c_tool4 = st.columns(4)
-    c_tool5, c_tool6, c_tool7 = st.columns(3)
+    c_tool1, c_tool2, c_tool3 = st.columns(3)
+    c_tool4, c_tool5, c_tool6 = st.columns(3)
     
-    c_tool1.button("📑 Checklist", help="Gerador de Checklist Eproc", use_container_width=True, on_click=toggle_view, args=("checklist",))
-    c_tool2.button("🆘 Chamados", help="Guia de Abertura de Chamados", use_container_width=True, on_click=toggle_view, args=("chamados",))
-    c_tool3.button("📝 Atendimento", help="Registrar Atendimento (Local)", use_container_width=True, on_click=toggle_view, args=("atendimentos",))
-    c_tool4.button("⏰ H. Extras", help="Registrar Horas Extras (Local)", use_container_width=True, on_click=toggle_view, args=("hextras",))
+    c_tool1.button("🆘 Chamados", help="Guia de Abertura de Chamados", use_container_width=True, on_click=toggle_view, args=("chamados",))
+    c_tool2.button("📝 Atendimento", help="Registrar Atendimento (Local)", use_container_width=True, on_click=toggle_view, args=("atendimentos",))
+    c_tool3.button("⏰ H. Extras", help="Registrar Horas Extras (Local)", use_container_width=True, on_click=toggle_view, args=("hextras",))
     
-    c_tool5.button("🧠 Descanso", help="Jogo e Ranking", use_container_width=True, on_click=toggle_view, args=("descanso",))
-    c_tool6.button("🐛 Erro/Novidade", help="Relatar Erro (Local)", use_container_width=True, on_click=toggle_view, args=("erro_novidade",))
-    c_tool7.button("📊 Relatórios", help="Ver Registros Salvos", use_container_width=True, on_click=toggle_view, args=("relatorios",))
+    c_tool4.button("🧠 Descanso", help="Jogo e Ranking", use_container_width=True, on_click=toggle_view, args=("descanso",))
+    c_tool5.button("🐛 Erro/Novidade", help="Relatar Erro (Local)", use_container_width=True, on_click=toggle_view, args=("erro_novidade",))
+    c_tool6.button("📊 Relatórios", help="Ver Registros Salvos", use_container_width=True, on_click=toggle_view, args=("relatorios",))
     
     # Views das ferramentas
-    if st.session_state.active_view == "checklist":
+    if st.session_state.active_view == "chamados":
         with st.container(border=True):
-            st.header("Gerador de Checklist (Sessão Eproc)")
-            st.markdown("### Gerar HTML")
-            data_eproc = st.date_input("Data da Sessão:", format="DD/MM/YYYY", key='sessao_data_input')
-            camara_eproc = st.selectbox("Selecione a Câmara:", CAMARAS_OPCOES, index=None, key='sessao_camara_select')
-            
-            if st.button("Gerar HTML", type="primary", use_container_width=True):
-                consultor = st.session_state.consultor_selectbox
-                if consultor and consultor != 'Selecione um nome' and camara_eproc:
-                    data_formatada = data_eproc.strftime("%d/%m/%Y")
-                    html_content = gerar_html_checklist(consultor, camara_eproc, data_formatada)
-                    filename = f"Checklist_{data_eproc.strftime('%d-%m-%Y')}.html"
-                    st.success("HTML gerado com sucesso!")
-                    st.download_button(
-                        label=f"⬇️ Baixar {filename}",
-                        data=html_content,
-                        file_name=filename,
-                        mime="text/html"
-                    )
-                else:
-                    st.warning("Preencha todos os campos.")
-    
-    elif st.session_state.active_view == "chamados":
-        with st.container(border=True):
-            st.header("Padrão abertura de chamados / jiras")
+            st.header("Guia de Abertura de Chamados")
             guide_step = st.session_state.get('chamado_guide_step', 1)
             
             if guide_step == 1:
@@ -912,12 +838,10 @@ with col_principal:
             at_descricao = st.text_input("Descrição:", key="at_desc")
             at_canal = st.selectbox("Canal:", REG_CANAL_OPCOES, index=None, placeholder="Selecione...", key="at_channel")
             at_desfecho = st.selectbox("Desfecho:", REG_DESFECHO_OPCOES, index=None, placeholder="Selecione...", key="at_outcome")
-            at_jira = st.text_input("Número do Jira:", value=st.session_state.get('last_jira_number', ""), placeholder="Ex: 1234", key="at_jira_input")
             
             if st.button("Salvar Registro Localmente", type="primary", use_container_width=True):
                 consultor = st.session_state.consultor_selectbox
                 if consultor and consultor != "Selecione um nome":
-                    st.session_state['last_jira_number'] = at_jira
                     st.success("✅ Atendimento registrado localmente!")
                     log_entry = {
                         'timestamp': datetime.now(),
@@ -928,8 +852,7 @@ with col_principal:
                         'sistema': at_sistema,
                         'descricao': at_descricao,
                         'canal': at_canal,
-                        'desfecho': at_desfecho,
-                        'jira': at_jira
+                        'desfecho': at_desfecho
                     }
                     st.session_state.daily_logs.append(log_entry)
                 else:
@@ -1064,8 +987,6 @@ with col_principal:
                             st.markdown(f"**📝 Descrição:** {log.get('descricao', 'N/A')}")
                             st.markdown(f"**📞 Canal:** {log.get('canal', 'N/A')}")
                             st.markdown(f"**✅ Desfecho:** {log.get('desfecho', 'N/A')}")
-                            if log.get('jira'):
-                                st.markdown(f"**🔢 Jira:** CESUPE-{log.get('jira')}")
                     
                     elif 'inicio' in log and 'tempo' in log:
                         # Horas Extras
@@ -1109,7 +1030,7 @@ with col_principal:
                             st.download_button(
                                 label="⬇️ Baixar Relatório PDF",
                                 data=pdf_buffer,
-                                file_name=f"relatorio_cesupe_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                                file_name=f"relatorio_Informática_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                                 mime="application/pdf"
                             )
                         except Exception as e:
@@ -1136,7 +1057,6 @@ with col_disponibilidade:
         'ausente': [],
         'atividade_especifica': [],
         'sessao_especifica': [],
-        'projeto_especifico': [],
         'reuniao_especifica': [],
         'indisponivel': []
     }
@@ -1169,11 +1089,6 @@ with col_disponibilidade:
             if match:
                 ui_lists['reuniao_especifica'].append((nome, match.group(1).split('|')[0].strip()))
         
-        if 'Projeto:' in status:
-            match = re.search(r'Projeto: (.*)', status)
-            if match:
-                ui_lists['projeto_especifico'].append((nome, match.group(1).split('|')[0].strip()))
-        
         if 'Atividade:' in status:
             match = re.search(r'Atividade: (.*)', status)
             if match:
@@ -1195,8 +1110,6 @@ with col_disponibilidade:
             extra_info = ""
             if "Atividade" in status_atual:
                 extra_info += " 📋"
-            if "Projeto" in status_atual:
-                extra_info += " 🏗️"
             
             if nome == responsavel:
                 display = f'<span style="background-color: #FFD700; color: #000; padding: 2px 6px; border-radius: 5px; font-weight: bold;">🥂 {nome}</span>'
@@ -1234,7 +1147,6 @@ with col_disponibilidade:
         st.markdown('---')
     
     render_section_detalhada('Em Demanda', '📋', ui_lists['atividade_especifica'], 'orange', 'Atividade')
-    render_section_detalhada('Projetos', '🏗️', ui_lists['projeto_especifico'], 'blue', 'Projeto')
     render_section_detalhada('Reuniões', '📅', ui_lists['reuniao_especifica'], 'violet', 'Reunião')
     render_section_simples('Almoço', '🍽️', ui_lists['almoco'], 'red')
     render_section_detalhada('Sessão', '🎙️', ui_lists['sessao_especifica'], 'green', 'Sessão')
@@ -1244,4 +1156,4 @@ with col_disponibilidade:
 
 # Footer
 st.markdown("---")
-st.caption("Sistema de Controle de Bastão - CESUPE 2026 - Versão Local (Sem Integrações Externas)")
+st.caption("Sistema de Controle de Bastão - Informática 2026 - Versão Local (Sem Integrações Externas)")
