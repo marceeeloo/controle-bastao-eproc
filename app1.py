@@ -688,13 +688,17 @@ with col_principal:
     st.markdown("---")
     
     # Ferramentas
-    c_tool1, c_tool2, c_tool3, c_tool4, c_tool5, c_tool6 = st.columns(6)
+    c_tool1, c_tool2, c_tool3, c_tool4 = st.columns(4)
+    c_tool5, c_tool6, c_tool7 = st.columns(3)
+    
     c_tool1.button("📑 Checklist", help="Gerador de Checklist Eproc", use_container_width=True, on_click=toggle_view, args=("checklist",))
     c_tool2.button("🆘 Chamados", help="Guia de Abertura de Chamados", use_container_width=True, on_click=toggle_view, args=("chamados",))
     c_tool3.button("📝 Atendimento", help="Registrar Atendimento (Local)", use_container_width=True, on_click=toggle_view, args=("atendimentos",))
     c_tool4.button("⏰ H. Extras", help="Registrar Horas Extras (Local)", use_container_width=True, on_click=toggle_view, args=("hextras",))
+    
     c_tool5.button("🧠 Descanso", help="Jogo e Ranking", use_container_width=True, on_click=toggle_view, args=("descanso",))
     c_tool6.button("🐛 Erro/Novidade", help="Relatar Erro (Local)", use_container_width=True, on_click=toggle_view, args=("erro_novidade",))
+    c_tool7.button("📊 Relatórios", help="Ver Registros Salvos", use_container_width=True, on_click=toggle_view, args=("relatorios",))
     
     # Views das ferramentas
     if st.session_state.active_view == "checklist":
@@ -830,6 +834,158 @@ with col_principal:
                     st.rerun()
                 else:
                     st.error("Selecione um consultor.")
+    
+    elif st.session_state.active_view == "relatorios":
+        with st.container(border=True):
+            st.markdown("### 📊 Relatórios e Registros Salvos")
+            
+            logs = st.session_state.daily_logs
+            
+            if not logs:
+                st.info("📭 Nenhum registro salvo ainda.")
+                st.markdown("---")
+                st.markdown("**Como usar:**")
+                st.markdown("1. Use as abas acima para registrar atendimentos, horas extras, etc.")
+                st.markdown("2. Clique em 'Salvar Localmente'")
+                st.markdown("3. Os registros aparecerão aqui!")
+            else:
+                st.success(f"✅ **{len(logs)} registro(s) encontrado(s)**")
+                
+                # Filtros
+                st.markdown("#### 🔍 Filtros")
+                col_f1, col_f2 = st.columns(2)
+                
+                with col_f1:
+                    tipo_filtro = st.selectbox(
+                        "Tipo de Registro:",
+                        ["Todos", "Atendimentos", "Horas Extras", "Erros/Novidades"]
+                    )
+                
+                with col_f2:
+                    consultores_nos_logs = list(set([log.get('consultor', 'N/A') for log in logs]))
+                    consultor_filtro = st.selectbox(
+                        "Consultor:",
+                        ["Todos"] + sorted(consultores_nos_logs)
+                    )
+                
+                st.markdown("---")
+                
+                # Filtrar logs
+                logs_filtrados = logs.copy()
+                
+                if tipo_filtro == "Atendimentos":
+                    logs_filtrados = [l for l in logs_filtrados if 'usuario' in l]
+                elif tipo_filtro == "Horas Extras":
+                    logs_filtrados = [l for l in logs_filtrados if 'inicio' in l and 'tempo' in l]
+                elif tipo_filtro == "Erros/Novidades":
+                    logs_filtrados = [l for l in logs_filtrados if 'titulo' in l and 'relato' in l]
+                
+                if consultor_filtro != "Todos":
+                    logs_filtrados = [l for l in logs_filtrados if l.get('consultor') == consultor_filtro]
+                
+                st.markdown(f"#### 📋 Exibindo {len(logs_filtrados)} registro(s)")
+                
+                # Exibir logs
+                for idx, log in enumerate(reversed(logs_filtrados), 1):
+                    timestamp = log.get('timestamp', datetime.now())
+                    if isinstance(timestamp, str):
+                        try:
+                            timestamp = datetime.fromisoformat(timestamp)
+                        except:
+                            timestamp = datetime.now()
+                    
+                    data_hora = timestamp.strftime("%d/%m/%Y %H:%M:%S")
+                    consultor = log.get('consultor', 'N/A')
+                    
+                    # Identifica tipo de registro
+                    if 'usuario' in log:
+                        # Atendimento
+                        with st.expander(f"📝 #{idx} - Atendimento - {consultor} - {data_hora}"):
+                            st.markdown(f"**👤 Consultor:** {consultor}")
+                            st.markdown(f"**📅 Data:** {log.get('data', 'N/A')}")
+                            st.markdown(f"**👥 Usuário:** {log.get('usuario', 'N/A')}")
+                            st.markdown(f"**🏢 Setor:** {log.get('setor', 'N/A')}")
+                            st.markdown(f"**💻 Sistema:** {log.get('sistema', 'N/A')}")
+                            st.markdown(f"**📝 Descrição:** {log.get('descricao', 'N/A')}")
+                            st.markdown(f"**📞 Canal:** {log.get('canal', 'N/A')}")
+                            st.markdown(f"**✅ Desfecho:** {log.get('desfecho', 'N/A')}")
+                            if log.get('jira'):
+                                st.markdown(f"**🔢 Jira:** CESUPE-{log.get('jira')}")
+                    
+                    elif 'inicio' in log and 'tempo' in log:
+                        # Horas Extras
+                        with st.expander(f"⏰ #{idx} - Horas Extras - {consultor} - {data_hora}"):
+                            st.markdown(f"**👤 Consultor:** {consultor}")
+                            st.markdown(f"**📅 Data:** {log.get('data', 'N/A')}")
+                            st.markdown(f"**🕐 Início:** {log.get('inicio', 'N/A')}")
+                            st.markdown(f"**⏱️ Tempo Total:** {log.get('tempo', 'N/A')}")
+                            st.markdown(f"**📝 Motivo:** {log.get('motivo', 'N/A')}")
+                    
+                    elif 'titulo' in log and 'relato' in log:
+                        # Erro/Novidade
+                        with st.expander(f"🐛 #{idx} - Erro/Novidade - {consultor} - {data_hora}"):
+                            st.markdown(f"**👤 Autor:** {consultor}")
+                            st.markdown(f"**📌 Título:** {log.get('titulo', 'N/A')}")
+                            st.markdown(f"**🎯 Objetivo:**")
+                            st.text(log.get('objetivo', 'N/A'))
+                            st.markdown(f"**🧪 Relato:**")
+                            st.text(log.get('relato', 'N/A'))
+                            st.markdown(f"**🏁 Resultado:**")
+                            st.text(log.get('resultado', 'N/A'))
+                
+                st.markdown("---")
+                
+                # Botões de ação
+                col_a1, col_a2 = st.columns(2)
+                
+                with col_a1:
+                    if st.button("🗑️ Limpar Todos os Registros", use_container_width=True):
+                        st.session_state.daily_logs = []
+                        st.success("✅ Registros limpos!")
+                        time.sleep(1)
+                        st.rerun()
+                
+                with col_a2:
+                    # Exportar para texto
+                    if st.button("📥 Exportar como TXT", use_container_width=True):
+                        export_text = "=== RELATÓRIO DE REGISTROS ===\n\n"
+                        export_text += f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n"
+                        export_text += f"Total de registros: {len(logs_filtrados)}\n\n"
+                        export_text += "="*50 + "\n\n"
+                        
+                        for idx, log in enumerate(logs_filtrados, 1):
+                            timestamp = log.get('timestamp', datetime.now())
+                            if isinstance(timestamp, str):
+                                try:
+                                    timestamp = datetime.fromisoformat(timestamp)
+                                except:
+                                    timestamp = datetime.now()
+                            
+                            export_text += f"REGISTRO #{idx}\n"
+                            export_text += f"Data/Hora: {timestamp.strftime('%d/%m/%Y %H:%M:%S')}\n"
+                            export_text += f"Consultor: {log.get('consultor', 'N/A')}\n"
+                            
+                            if 'usuario' in log:
+                                export_text += "Tipo: ATENDIMENTO\n"
+                                export_text += f"Usuário: {log.get('usuario', 'N/A')}\n"
+                                export_text += f"Sistema: {log.get('sistema', 'N/A')}\n"
+                                export_text += f"Descrição: {log.get('descricao', 'N/A')}\n"
+                            elif 'inicio' in log:
+                                export_text += "Tipo: HORAS EXTRAS\n"
+                                export_text += f"Tempo: {log.get('tempo', 'N/A')}\n"
+                                export_text += f"Motivo: {log.get('motivo', 'N/A')}\n"
+                            elif 'titulo' in log:
+                                export_text += "Tipo: ERRO/NOVIDADE\n"
+                                export_text += f"Título: {log.get('titulo', 'N/A')}\n"
+                            
+                            export_text += "\n" + "-"*50 + "\n\n"
+                        
+                        st.download_button(
+                            label="⬇️ Baixar Relatório",
+                            data=export_text,
+                            file_name=f"relatorio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                            mime="text/plain"
+                        )
 
 # Coluna lateral (Disponibilidade)
 with col_disponibilidade:
@@ -958,4 +1114,4 @@ with col_disponibilidade:
 
 # Footer
 st.markdown("---")
-st.caption("Sistema de Controle de Bastão - INFORMÁTICA - ")
+st.caption("Sistema de Controle de Bastão - INFORMÁTICA 2026 - Versão Local ")
