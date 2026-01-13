@@ -347,6 +347,161 @@ def gerar_html_checklist(consultor_nome, camara_nome, data_sessao_formatada):
     """
     return html_template
 
+def gerar_pdf_relatorio(logs_filtrados):
+    """Gera PDF com os registros"""
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import cm
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle
+    from reportlab.lib import colors
+    from io import BytesIO
+    
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, 
+                           rightMargin=2*cm, leftMargin=2*cm,
+                           topMargin=2*cm, bottomMargin=2*cm)
+    
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    # Estilo customizado para título
+    titulo_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=18,
+        textColor=colors.HexColor('#1f4788'),
+        spaceAfter=30,
+        alignment=1  # Centralizado
+    )
+    
+    # Estilo para subtítulos
+    subtitulo_style = ParagraphStyle(
+        'CustomSubtitle',
+        parent=styles['Heading2'],
+        fontSize=12,
+        textColor=colors.HexColor('#2c5aa0'),
+        spaceAfter=10
+    )
+    
+    # Estilo para corpo
+    corpo_style = ParagraphStyle(
+        'CustomBody',
+        parent=styles['Normal'],
+        fontSize=10,
+        spaceAfter=6
+    )
+    
+    # Cabeçalho
+    elements.append(Paragraph("RELATÓRIO DE REGISTROS - CESUPE", titulo_style))
+    elements.append(Paragraph("Sistema de Controle de Bastão", corpo_style))
+    elements.append(Spacer(1, 0.5*cm))
+    
+    # Informações do relatório
+    data_geracao = datetime.now().strftime("%d/%m/%Y às %H:%M:%S")
+    elements.append(Paragraph(f"<b>Gerado em:</b> {data_geracao}", corpo_style))
+    elements.append(Paragraph(f"<b>Total de registros:</b> {len(logs_filtrados)}", corpo_style))
+    elements.append(Spacer(1, 1*cm))
+    
+    # Registros
+    for idx, log in enumerate(logs_filtrados, 1):
+        # Separador visual
+        if idx > 1:
+            elements.append(Spacer(1, 0.5*cm))
+        
+        # Cabeçalho do registro
+        timestamp = log.get('timestamp', datetime.now())
+        if isinstance(timestamp, str):
+            try:
+                timestamp = datetime.fromisoformat(timestamp)
+            except:
+                timestamp = datetime.now()
+        
+        data_hora = timestamp.strftime("%d/%m/%Y %H:%M:%S")
+        consultor = log.get('consultor', 'N/A')
+        
+        # Determina tipo
+        if 'usuario' in log:
+            tipo = "ATENDIMENTO"
+            icone = "📝"
+        elif 'inicio' in log and 'tempo' in log:
+            tipo = "HORAS EXTRAS"
+            icone = "⏰"
+        elif 'titulo' in log and 'relato' in log:
+            tipo = "ERRO/NOVIDADE"
+            icone = "🐛"
+        else:
+            tipo = "REGISTRO"
+            icone = "📄"
+        
+        # Título do registro
+        elements.append(Paragraph(f"<b>REGISTRO #{idx} - {tipo}</b>", subtitulo_style))
+        
+        # Tabela com informações básicas
+        dados_basicos = [
+            ["Data/Hora:", data_hora],
+            ["Consultor:", consultor]
+        ]
+        
+        # Adiciona campos específicos por tipo
+        if 'usuario' in log:
+            dados_basicos.extend([
+                ["Usuário:", str(log.get('usuario', 'N/A'))],
+                ["Setor:", str(log.get('setor', 'N/A'))],
+                ["Sistema:", str(log.get('sistema', 'N/A'))],
+                ["Descrição:", str(log.get('descricao', 'N/A'))],
+                ["Canal:", str(log.get('canal', 'N/A'))],
+                ["Desfecho:", str(log.get('desfecho', 'N/A'))]
+            ])
+            if log.get('jira'):
+                dados_basicos.append(["Jira:", f"CESUPE-{log.get('jira')}"])
+        
+        elif 'inicio' in log and 'tempo' in log:
+            dados_basicos.extend([
+                ["Data:", str(log.get('data', 'N/A'))],
+                ["Início:", str(log.get('inicio', 'N/A'))],
+                ["Tempo Total:", str(log.get('tempo', 'N/A'))],
+                ["Motivo:", str(log.get('motivo', 'N/A'))]
+            ])
+        
+        elif 'titulo' in log:
+            dados_basicos.extend([
+                ["Título:", str(log.get('titulo', 'N/A'))],
+                ["Objetivo:", str(log.get('objetivo', 'N/A'))[:100] + "..." if len(str(log.get('objetivo', ''))) > 100 else str(log.get('objetivo', 'N/A'))],
+                ["Relato:", str(log.get('relato', 'N/A'))[:100] + "..." if len(str(log.get('relato', ''))) > 100 else str(log.get('relato', 'N/A'))],
+                ["Resultado:", str(log.get('resultado', 'N/A'))[:100] + "..." if len(str(log.get('resultado', ''))) > 100 else str(log.get('resultado', 'N/A'))]
+            ])
+        
+        # Cria tabela
+        tabela = Table(dados_basicos, colWidths=[4*cm, 12*cm])
+        tabela.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#e8f4f8')),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
+        
+        elements.append(tabela)
+        
+        # Quebra de página a cada 3 registros (exceto no último)
+        if idx % 3 == 0 and idx < len(logs_filtrados):
+            elements.append(PageBreak())
+    
+    # Rodapé final
+    elements.append(Spacer(1, 1*cm))
+    elements.append(Paragraph("___", corpo_style))
+    elements.append(Paragraph(f"Relatório gerado pelo Sistema de Controle de Bastão - CESUPE/TJMG", 
+                             ParagraphStyle('Footer', parent=styles['Normal'], fontSize=8, textColor=colors.grey)))
+    
+    # Gera PDF
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer
+
 def handle_simon_game():
     COLORS = ["🔴", "🔵", "🟢", "🟡"]
     st.markdown("### 🧠 Jogo da Memória (Simon)")
@@ -946,46 +1101,21 @@ with col_principal:
                         st.rerun()
                 
                 with col_a2:
-                    # Exportar para texto
-                    if st.button("📥 Exportar como TXT", use_container_width=True):
-                        export_text = "=== RELATÓRIO DE REGISTROS ===\n\n"
-                        export_text += f"Gerado em: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n"
-                        export_text += f"Total de registros: {len(logs_filtrados)}\n\n"
-                        export_text += "="*50 + "\n\n"
-                        
-                        for idx, log in enumerate(logs_filtrados, 1):
-                            timestamp = log.get('timestamp', datetime.now())
-                            if isinstance(timestamp, str):
-                                try:
-                                    timestamp = datetime.fromisoformat(timestamp)
-                                except:
-                                    timestamp = datetime.now()
+                    # Exportar para PDF
+                    if st.button("📥 Exportar como PDF", use_container_width=True):
+                        try:
+                            pdf_buffer = gerar_pdf_relatorio(logs_filtrados)
                             
-                            export_text += f"REGISTRO #{idx}\n"
-                            export_text += f"Data/Hora: {timestamp.strftime('%d/%m/%Y %H:%M:%S')}\n"
-                            export_text += f"Consultor: {log.get('consultor', 'N/A')}\n"
-                            
-                            if 'usuario' in log:
-                                export_text += "Tipo: ATENDIMENTO\n"
-                                export_text += f"Usuário: {log.get('usuario', 'N/A')}\n"
-                                export_text += f"Sistema: {log.get('sistema', 'N/A')}\n"
-                                export_text += f"Descrição: {log.get('descricao', 'N/A')}\n"
-                            elif 'inicio' in log:
-                                export_text += "Tipo: HORAS EXTRAS\n"
-                                export_text += f"Tempo: {log.get('tempo', 'N/A')}\n"
-                                export_text += f"Motivo: {log.get('motivo', 'N/A')}\n"
-                            elif 'titulo' in log:
-                                export_text += "Tipo: ERRO/NOVIDADE\n"
-                                export_text += f"Título: {log.get('titulo', 'N/A')}\n"
-                            
-                            export_text += "\n" + "-"*50 + "\n\n"
-                        
-                        st.download_button(
-                            label="⬇️ Baixar Relatório",
-                            data=export_text,
-                            file_name=f"relatorio_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                            mime="text/plain"
-                        )
+                            st.download_button(
+                                label="⬇️ Baixar Relatório PDF",
+                                data=pdf_buffer,
+                                file_name=f"relatorio_cesupe_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                                mime="application/pdf"
+                            )
+                        except Exception as e:
+                            st.error(f"❌ Erro ao gerar PDF: {e}")
+                            st.info("💡 Certifique-se de que o reportlab está instalado: pip install reportlab")
+
 
 # Coluna lateral (Disponibilidade)
 with col_disponibilidade:
@@ -1114,4 +1244,4 @@ with col_disponibilidade:
 
 # Footer
 st.markdown("---")
-st.caption("Sistema de Controle de Bastão - INFORMÁTICA 2026 - Versão Local ")
+st.caption("Sistema de Controle de Bastão - CESUPE 2026 - Versão Local (Sem Integrações Externas)")
