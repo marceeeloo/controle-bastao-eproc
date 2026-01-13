@@ -1,5 +1,5 @@
 # ============================================
-# CONTROLE DE BASTÃO CESUPE 2026
+# CONTROLE DE BASTÃO Informática 2026
 # Versão: Completa sem Integrações Externas
 # ============================================
 import streamlit as st
@@ -35,7 +35,7 @@ CONSULTORES = sorted([
 REG_USUARIO_OPCOES = ["Cartório", "Externo"]
 REG_SISTEMA_OPCOES = ["Conveniados", "Outros", "Eproc", "Themis", "JPE", "SIAP"]
 REG_CANAL_OPCOES = ["Presencial", "Telefone", "Email", "Whatsapp", "Outros"]
-REG_DESFECHO_OPCOES = ["Resolvido - Cesupe", "Escalonado"]
+REG_DESFECHO_OPCOES = ["Resolvido - Informática", "Escalonado"]
 
 OPCOES_ATIVIDADES_STATUS = ["HP", "E-mail", "WhatsApp Plantão", "Treinamento", "Homologação", "Redação Documentos", "Outros"]
 
@@ -323,7 +323,7 @@ def gerar_html_relatorio(logs_filtrados):
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Relatório CESUPE</title>
+        <title>Relatório Informática</title>
         <style>
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -426,7 +426,7 @@ def gerar_html_relatorio(logs_filtrados):
     </head>
     <body>
         <div class="header">
-            <h1>📊 RELATÓRIO DE REGISTROS - CESUPE</h1>
+            <h1>📊 RELATÓRIO DE REGISTROS - Informática</h1>
             <p>Sistema de Controle de Bastão</p>
             <p><strong>Gerado em:</strong> """ + datetime.now().strftime("%d/%m/%Y às %H:%M:%S") + """</p>
             <p><strong>Total de registros:</strong> """ + str(len(logs_filtrados)) + """</p>
@@ -551,7 +551,7 @@ def gerar_html_relatorio(logs_filtrados):
     
     html += """
         <div class="footer">
-            <p>Sistema de Controle de Bastão - CESUPE/TJMG</p>
+            <p>Sistema de Controle de Bastão - Informática/TJMG</p>
             <p>Relatório gerado automaticamente</p>
         </div>
     </body>
@@ -673,7 +673,7 @@ def toggle_view(view_name):
 # INTERFACE PRINCIPAL
 # ============================================
 
-st.set_page_config(page_title="Controle Bastão Cesupe 2026", layout="wide", page_icon="🥂")
+st.set_page_config(page_title="Controle Bastão Informática 2026", layout="wide", page_icon="🥂")
 init_session_state()
 st.components.v1.html("<script>window.scrollTo(0, 0);</script>", height=0)
 render_fireworks()
@@ -683,7 +683,7 @@ c_topo_esq, c_topo_dir = st.columns([2, 1], vertical_alignment="bottom")
 with c_topo_esq:
     st.markdown(f"""<div style="display: flex; align-items: center; gap: 15px;">
     <h1 style="margin: 0; padding: 0; font-size: 2.2rem; color: #FFD700; text-shadow: 1px 1px 2px #B8860B;">
-    Controle Bastão Cesupe 2026 {BASTAO_EMOJI}</h1>
+    Controle Bastão Informática 2026 {BASTAO_EMOJI}</h1>
     <img src="{GIF_BASTAO_HOLDER}" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #FFD700;">
     </div>""", unsafe_allow_html=True)
 
@@ -1122,7 +1122,7 @@ with col_principal:
                         st.download_button(
                             label="⬇️ Baixar Relatório HTML",
                             data=html_content,
-                            file_name=f"relatorio_cesupe_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html",
+                            file_name=f"relatorio_Informática_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html",
                             mime="text/html"
                         )
                         
@@ -1249,4 +1249,4 @@ with col_disponibilidade:
 
 # Footer
 st.markdown("---")
-st.caption("Sistema de Controle de Bastão - CESUPE 2026 - Versão Local (Sem Integrações Externas)")
+st.caption("Sistema de Controle de Bastão - Informática 2026 - Versão Local (Sem Integrações Externas)")
