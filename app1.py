@@ -1,5 +1,5 @@
 # ============================================
-# CONTROLE DE BASTÃO Informática 2026
+# CONTROLE DE BASTÃO INFORMÁTICA 2026
 # Versão: Completa sem Integrações Externas
 # ============================================
 import streamlit as st
@@ -32,10 +32,10 @@ CONSULTORES = sorted([
 ])
 
 # --- Constantes de Opções ---
-REG_USUARIO_OPCOES = ["Cartório", "Externo"]
+REG_USUARIO_OPCOES = ["Cartório", "Gabinete", "Externo"]
 REG_SISTEMA_OPCOES = ["Conveniados", "Outros", "Eproc", "Themis", "JPE", "SIAP"]
 REG_CANAL_OPCOES = ["Presencial", "Telefone", "Email", "Whatsapp", "Outros"]
-REG_DESFECHO_OPCOES = ["Resolvido - Informática", "Escalonado"]
+REG_DESFECHO_OPCOES = ["Resolvido - INFORMÁTICA", "Escalonado"]
 
 OPCOES_ATIVIDADES_STATUS = ["HP", "E-mail", "WhatsApp Plantão", "Treinamento", "Homologação", "Redação Documentos", "Outros"]
 
@@ -360,7 +360,7 @@ def gerar_pdf_relatorio(logs_filtrados):
     )
     
     # Cabeçalho
-    elements.append(Paragraph("RELATÓRIO DE REGISTROS - Informática", titulo_style))
+    elements.append(Paragraph("RELATÓRIO DE REGISTROS - INFORMÁTICA", titulo_style))
     elements.append(Paragraph("Sistema de Controle de Bastão", corpo_style))
     elements.append(Spacer(1, 0.5*cm))
     
@@ -460,7 +460,7 @@ def gerar_pdf_relatorio(logs_filtrados):
     # Rodapé final
     elements.append(Spacer(1, 1*cm))
     elements.append(Paragraph("___", corpo_style))
-    elements.append(Paragraph(f"Relatório gerado pelo Sistema de Controle de Bastão - Informática/TJMG", 
+    elements.append(Paragraph(f"Relatório gerado pelo Sistema de Controle de Bastão - INFORMÁTICA/TJMG", 
                              ParagraphStyle('Footer', parent=styles['Normal'], fontSize=8, textColor=colors.grey)))
     
     # Gera PDF
@@ -581,7 +581,7 @@ def toggle_view(view_name):
 # INTERFACE PRINCIPAL
 # ============================================
 
-st.set_page_config(page_title="Controle Bastão Informática 2026", layout="wide", page_icon="🥂")
+st.set_page_config(page_title="Controle Bastão INFORMÁTICA 2026", layout="wide", page_icon="🥂")
 init_session_state()
 st.components.v1.html("<script>window.scrollTo(0, 0);</script>", height=0)
 render_fireworks()
@@ -591,7 +591,7 @@ c_topo_esq, c_topo_dir = st.columns([2, 1], vertical_alignment="bottom")
 with c_topo_esq:
     st.markdown(f"""<div style="display: flex; align-items: center; gap: 15px;">
     <h1 style="margin: 0; padding: 0; font-size: 2.2rem; color: #FFD700; text-shadow: 1px 1px 2px #B8860B;">
-    Controle Bastão Informática 2026 {BASTAO_EMOJI}</h1>
+    Controle Bastão INFORMÁTICA 2026 {BASTAO_EMOJI}</h1>
     <img src="{GIF_BASTAO_HOLDER}" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #FFD700;">
     </div>""", unsafe_allow_html=True)
 
@@ -1030,7 +1030,7 @@ with col_principal:
                             st.download_button(
                                 label="⬇️ Baixar Relatório PDF",
                                 data=pdf_buffer,
-                                file_name=f"relatorio_Informática_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                                file_name=f"relatorio_INFORMÁTICA_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                                 mime="application/pdf"
                             )
                         except Exception as e:
@@ -1156,4 +1156,4 @@ with col_disponibilidade:
 
 # Footer
 st.markdown("---")
-st.caption("Sistema de Controle de Bastão - Informática 2026 - Versão Local (Sem Integrações Externas)")
+st.caption("Sistema de Controle de Bastão - INFORMÁTICA 2026 - Versão Local (Sem Integrações Externas)")
