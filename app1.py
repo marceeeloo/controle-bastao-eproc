@@ -33,7 +33,7 @@ COLABORADORES = sorted([
 ])
 
 # --- Constantes de Opções ---
-REG_USUARIO_OPCOES = ["Cartório", "Gabinete", "Externo"]
+REG_USUARIO_OPCOES = ["Cartório", "Externo"]
 REG_SISTEMA_OPCOES = ["Conveniados", "Outros", "Eproc", "Themis", "JPE", "SIAP"]
 REG_CANAL_OPCOES = ["Presencial", "Telefone", "Email", "Whatsapp", "Outros"]
 REG_DESFECHO_OPCOES = ["Resolvido - Informática", "Escalonado"]
@@ -48,6 +48,36 @@ GIF_URL_ROTATION = 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmx4azVxbG
 GIF_URL_NEDRY = 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGNkMGx3YnNkcXQ2bHJmNTZtZThraHhuNmVoOTNmbG0wcDloOXAybiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7kyWoqTue3po4/giphy.gif'
 
 # ============================================
+
+# ============================================
+# SISTEMA DE CACHE PERSISTENTE
+# ============================================
+
+@st.cache_resource
+def get_shared_state():
+    """Cria estado compartilhado entre reloads"""
+    return {
+        'bastao_queue': [],
+        'status_texto': {nome: 'Indisponível' for nome in COLABORADORES},
+        'bastao_start_time': None,
+        'bastao_counts': {nome: 0 for nome in COLABORADORES},
+        'rotation_gif_start_time': None,
+        'gif_warning': False,
+        'auxilio_ativo': False,
+        'active_view': None,
+        'chamado_guide_step': 0,
+        'simon_sequence': [],
+        'simon_user_input': [],
+        'simon_status': 'start',
+        'simon_level': 1,
+        'simon_ranking': [],
+        'daily_logs': [],
+        'success_message': None,
+        'success_message_time': None,
+        'check_states': {nome: False for nome in COLABORADORES}
+    }
+
+
 # FUNÇÕES AUXILIARES
 # ============================================
 
@@ -84,35 +114,25 @@ def apply_modern_styles():
     </style>""", unsafe_allow_html=True)
 
 
+
 def init_session_state():
-    """Inicializa o estado da sessão"""
-    defaults = {
-        'bastao_queue': [],
-        'status_texto': {nome: 'Indisponível' for nome in COLABORADORES},
-        'bastao_start_time': None,
-        'bastao_counts': {nome: 0 for nome in COLABORADORES},
-        'rotation_gif_start_time': None,
-        'gif_warning': False,
-        'auxilio_ativo': False,
-        'active_view': None,
-        'chamado_guide_step': 0,
-        'simon_sequence': [],
-        'simon_user_input': [],
-        'simon_status': 'start',
-        'simon_level': 1,
-        'simon_ranking': [],
-        'daily_logs': [],
-        'success_message': None,
-        'success_message_time': None,
-    }
+    """Inicializa o estado da sessão usando cache compartilhado"""
+    shared = get_shared_state()
     
-    for key, default in defaults.items():
-        if key not in st.session_state:
-            st.session_state[key] = default
-    
-    for nome in COLABORADORES:
-        if f'check_{nome}' not in st.session_state:
-            st.session_state[f'check_{nome}'] = False
+    # Sincronizar session_state com shared_state
+    for key, default in shared.items():
+        if key == 'check_states':
+            # Tratar checkboxes separadamente
+            for nome, valor in default.items():
+                check_key = f'check_{nome}'
+                if check_key not in st.session_state:
+                    st.session_state[check_key] = valor
+        elif key not in st.session_state:
+            if key in ['bastao_queue', 'status_texto', 'bastao_counts', 'simon_ranking', 'daily_logs']:
+                # Copiar listas e dicts para evitar problemas
+                st.session_state[key] = shared[key].copy() if isinstance(shared[key], (list, dict)) else shared[key]
+            else:
+                st.session_state[key] = shared[key]
 
 def find_next_holder_index(current_index, queue):
     if not queue: return -1
