@@ -141,11 +141,7 @@ def init_session_state():
     # Marcar como inicializado
     st.session_state.initialized = True
     
-    # Tentar carregar estado salvo
-    if load_state():
-        return  # Estado carregado com sucesso
-    
-    # Se não carregou, inicializar padrão
+    # Lista de todos os campos necessários com valores padrão
     defaults = {
         'bastao_queue': [],
         'status_texto': {nome: 'Indisponível' for nome in COLABORADORES},
@@ -166,10 +162,15 @@ def init_session_state():
         'success_message_time': None,
     }
     
+    # Tentar carregar estado salvo
+    loaded = load_state()
+    
+    # Inicializar TODOS os campos (mesmo que tenha carregado do JSON)
     for key, default in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = default
     
+    # Inicializar checkboxes
     for nome in COLABORADORES:
         if f'check_{nome}' not in st.session_state:
             st.session_state[f'check_{nome}'] = False
