@@ -12,8 +12,8 @@ import random
 import base64
 import os
 
-# --- Constantes de Colaboradores_Wyntech ---
-Colaboradores_Wyntech = sorted([
+# --- Constantes de Colaboradores ---
+Colaboradores = sorted([
     "Alex Paulo da Silva",
     "Dirceu Gonçalves Siqueira Neto",
     "Douglas de Souza Gonçalves",
@@ -66,9 +66,9 @@ def init_session_state():
     """Inicializa o estado da sessão"""
     defaults = {
         'bastao_queue': [],
-        'status_texto': {nome: 'Indisponível' for nome in Colaboradores_Wyntech},
+        'status_texto': {nome: 'Indisponível' for nome in Colaboradores},
         'bastao_start_time': None,
-        'bastao_counts': {nome: 0 for nome in Colaboradores_Wyntech},
+        'bastao_counts': {nome: 0 for nome in Colaboradores},
         'rotation_gif_start_time': None,
         'gif_warning': False,
         'auxilio_ativo': False,
@@ -88,20 +88,20 @@ def init_session_state():
         if key not in st.session_state:
             st.session_state[key] = default
     
-    for nome in Colaboradores_Wyntech:
+    for nome in Colaboradores:
         if f'check_{nome}' not in st.session_state:
             st.session_state[f'check_{nome}'] = False
 
 def find_next_holder_index(current_index, queue):
     if not queue: return -1
-    num_Colaboradores_Wyntech = len(queue)
-    if num_Colaboradores_Wyntech == 0: return -1
-    next_idx = (current_index + 1) % num_Colaboradores_Wyntech
+    num_Colaboradores = len(queue)
+    if num_Colaboradores == 0: return -1
+    next_idx = (current_index + 1) % num_Colaboradores
     attempts = 0
-    while attempts < num_Colaboradores_Wyntech:
-        consultor = queue[next_idx]
-        if st.session_state.get(f'check_{consultor}'): return next_idx
-        next_idx = (next_idx + 1) % num_Colaboradores_Wyntech
+    while attempts < num_Colaboradores:
+        Colaboradores = queue[next_idx]
+        if st.session_state.get(f'check_{Colaboradores}'): return next_idx
+        next_idx = (next_idx + 1) % num_Colaboradores
         attempts += 1
     return -1
 
@@ -117,7 +117,7 @@ def check_and_assume_baton():
     elif first_eligible_holder: should_have_baton = first_eligible_holder
 
     changed = False
-    for c in Colaboradores_Wyntech:
+    for c in Colaboradores:
         s_text = st.session_state.status_texto.get(c, '')
         if c != should_have_baton and 'Bastão' in s_text:
             st.session_state.status_texto[c] = 'Indisponível'
@@ -139,29 +139,29 @@ def check_and_assume_baton():
 
     return changed
 
-def toggle_queue(consultor):
+def toggle_queue(Colaboradores):
     st.session_state.gif_warning = False
     st.session_state.rotation_gif_start_time = None
     
-    if consultor in st.session_state.bastao_queue:
-        st.session_state.bastao_queue.remove(consultor)
-        st.session_state[f'check_{consultor}'] = False
-        current_s = st.session_state.status_texto.get(consultor, '')
+    if Colaboradores in st.session_state.bastao_queue:
+        st.session_state.bastao_queue.remove(Colaboradores)
+        st.session_state[f'check_{Colaboradores}'] = False
+        current_s = st.session_state.status_texto.get(Colaboradores, '')
         if current_s == '' or current_s == 'Bastão':
-            st.session_state.status_texto[consultor] = 'Indisponível'
+            st.session_state.status_texto[Colaboradores] = 'Indisponível'
     else:
-        st.session_state.bastao_queue.append(consultor)
-        st.session_state[f'check_{consultor}'] = True
-        current_s = st.session_state.status_texto.get(consultor, 'Indisponível')
+        st.session_state.bastao_queue.append(Colaboradores)
+        st.session_state[f'check_{Colaboradores}'] = True
+        current_s = st.session_state.status_texto.get(Colaboradores, 'Indisponível')
         if current_s == 'Indisponível':
-            st.session_state.status_texto[consultor] = ''
+            st.session_state.status_texto[Colaboradores] = ''
 
     check_and_assume_baton()
 
 
 
 def rotate_bastao():
-    """Passa o bastão para o próximo consultor (SEM PRECISAR SELECIONAR)"""
+    """Passa o bastão para o próximo Colaboradores (SEM PRECISAR SELECIONAR)"""
     st.session_state.gif_warning = False
     st.session_state.rotation_gif_start_time = None
     
@@ -207,16 +207,16 @@ def rotate_bastao():
         
         st.rerun()
     else:
-        st.warning('⚠️ Não há próximo(a) consultor(a) elegível na fila.')
+        st.warning('⚠️ Não há próximo(a) Colaboradores(a) elegível na fila.')
         check_and_assume_baton()
 
 def update_status(new_status_part, force_exit_queue=False):
-    selected = st.session_state.consultor_selectbox
+    selected = st.session_state.Colaboradores_selectbox
     st.session_state.gif_warning = False
     st.session_state.rotation_gif_start_time = None
     
     if not selected or selected == 'Selecione um nome':
-        st.warning('Selecione um(a) consultor(a).')
+        st.warning('Selecione um(a) Colaboradores(a).')
         return
 
     blocking_statuses = ['Almoço', 'Ausente', 'Saída rápida']
@@ -253,24 +253,24 @@ def update_status(new_status_part, force_exit_queue=False):
     
 
 
-def leave_specific_status(consultor, status_type_to_remove):
+def leave_specific_status(Colaboradores, status_type_to_remove):
     st.session_state.gif_warning = False
-    old_status = st.session_state.status_texto.get(consultor, '')
+    old_status = st.session_state.status_texto.get(Colaboradores, '')
     parts = [p.strip() for p in old_status.split('|')]
     new_parts = [p for p in parts if status_type_to_remove not in p and p]
     new_status = " | ".join(new_parts)
-    if not new_status and consultor not in st.session_state.bastao_queue:
+    if not new_status and Colaboradores not in st.session_state.bastao_queue:
         new_status = 'Indisponível'
-    st.session_state.status_texto[consultor] = new_status
+    st.session_state.status_texto[Colaboradores] = new_status
     check_and_assume_baton()
 
 
-def enter_from_indisponivel(consultor):
+def enter_from_indisponivel(Colaboradores):
     st.session_state.gif_warning = False
-    if consultor not in st.session_state.bastao_queue:
-        st.session_state.bastao_queue.append(consultor)
-    st.session_state[f'check_{consultor}'] = True
-    st.session_state.status_texto[consultor] = ''
+    if Colaboradores not in st.session_state.bastao_queue:
+        st.session_state.bastao_queue.append(Colaboradores)
+    st.session_state[f'check_{Colaboradores}'] = True
+    st.session_state.status_texto[Colaboradores] = ''
     check_and_assume_baton()
 
 
@@ -442,7 +442,7 @@ def gerar_html_relatorio(logs_filtrados):
                 timestamp = datetime.now()
         
         data_hora = timestamp.strftime("%d/%m/%Y %H:%M:%S")
-        consultor = log.get('consultor', 'N/A')
+        Colaboradores = log.get('Colaboradores', 'N/A')
         
         # Determina tipo
         if 'usuario' in log:
@@ -473,8 +473,8 @@ def gerar_html_relatorio(logs_filtrados):
                 <div class="campo-valor">{data_hora}</div>
             </div>
             <div class="campo">
-                <div class="campo-label">👤 Consultor:</div>
-                <div class="campo-valor">{consultor}</div>
+                <div class="campo-label">👤 Colaboradores:</div>
+                <div class="campo-valor">{Colaboradores}</div>
             </div>
         """
         
@@ -615,21 +615,21 @@ def handle_simon_game():
         st.error(f"❌ Errou! Você chegou ao Nível {st.session_state.simon_level}.")
         st.markdown(f"Sequência correta era: {' '.join(st.session_state.simon_sequence)}")
         
-        consultor = st.session_state.consultor_selectbox
-        if consultor and consultor != 'Selecione um nome':
+        Colaboradores = st.session_state.Colaboradores_selectbox
+        if Colaboradores and Colaboradores != 'Selecione um nome':
             score = st.session_state.simon_level
             current_ranking = st.session_state.simon_ranking
             found = False
             for entry in current_ranking:
-                if entry['nome'] == consultor:
+                if entry['nome'] == Colaboradores:
                     if score > entry['score']:
                         entry['score'] = score
                     found = True
                     break
             if not found:
-                current_ranking.append({'nome': consultor, 'score': score})
+                current_ranking.append({'nome': Colaboradores, 'score': score})
             st.session_state.simon_ranking = sorted(current_ranking, key=lambda x: x['score'], reverse=True)[:5]
-            st.success(f"Pontuação salva para {consultor}!")
+            st.success(f"Pontuação salva para {Colaboradores}!")
         else:
             st.warning("Selecione seu nome no menu superior para salvar no Ranking.")
             
@@ -690,13 +690,13 @@ with c_topo_esq:
 with c_topo_dir:
     c_sub1, c_sub2 = st.columns([2, 1], vertical_alignment="bottom")
     with c_sub1:
-        novo_responsavel = st.selectbox("Assumir Bastão (Rápido)", options=["Selecione"] + Colaboradores_Wyntech, 
+        novo_responsavel = st.selectbox("Assumir Bastão (Rápido)", options=["Selecione"] + Colaboradores, 
                                        label_visibility="collapsed", key="quick_enter")
     with c_sub2:
         if st.button("🚀 Entrar", help="Ficar disponível na fila imediatamente"):
             if novo_responsavel and novo_responsavel != "Selecione":
                 toggle_queue(novo_responsavel)
-                st.session_state.consultor_selectbox = novo_responsavel
+                st.session_state.Colaboradores_selectbox = novo_responsavel
                 st.success(f"{novo_responsavel} agora está na fila!")
                 st.rerun()
 
@@ -742,9 +742,9 @@ if proximo_index != -1:
         if current_check_idx == start_check_idx and checked_count > 0:
             break
         if 0 <= current_check_idx < num_q:
-            consultor = queue[current_check_idx]
-            if consultor != responsavel and consultor != proximo and st.session_state.get(f'check_{consultor}'):
-                restante.append(consultor)
+            Colaboradores = queue[current_check_idx]
+            if Colaboradores != responsavel and Colaboradores != proximo and st.session_state.get(f'check_{Colaboradores}'):
+                restante.append(Colaboradores)
         current_check_idx = (current_check_idx + 1) % num_q
         checked_count += 1
 
@@ -795,8 +795,8 @@ with col_principal:
         st.markdown("&nbsp;")
     
     st.markdown("###")
-    st.header("**Consultor(a)**")
-    st.selectbox('Selecione:', options=['Selecione um nome'] + Colaboradores_Wyntech, key='consultor_selectbox', label_visibility='collapsed')
+    st.header("**Colaboradores(a)**")
+    st.selectbox('Selecione:', options=['Selecione um nome'] + Colaboradores, key='Colaboradores_selectbox', label_visibility='collapsed')
     
     st.markdown("#### ")
     st.markdown("**Ações:**")
@@ -932,12 +932,12 @@ with col_principal:
             at_desfecho = st.selectbox("Desfecho:", REG_DESFECHO_OPCOES, index=None, placeholder="Selecione...", key="at_outcome")
             
             if st.button("Salvar Registro Localmente", type="primary", use_container_width=True):
-                consultor = st.session_state.consultor_selectbox
-                if consultor and consultor != "Selecione um nome":
+                Colaboradores = st.session_state.Colaboradores_selectbox
+                if Colaboradores and Colaboradores != "Selecione um nome":
                     st.success("✅ Atendimento registrado localmente!")
                     log_entry = {
                         'timestamp': datetime.now(),
-                        'consultor': consultor,
+                        'Colaboradores': Colaboradores,
                         'data': at_data,
                         'usuario': at_usuario,
                         'setor': at_nome_setor,
@@ -948,7 +948,7 @@ with col_principal:
                     }
                     st.session_state.daily_logs.append(log_entry)
                 else:
-                    st.error("Selecione um consultor.")
+                    st.error("Selecione um Colaboradores.")
     
     elif st.session_state.active_view == "hextras":
         with st.container(border=True):
@@ -959,12 +959,12 @@ with col_principal:
             he_motivo = st.text_input("Motivo da Hora Extra:")
             
             if st.button("Salvar HE Localmente", type="primary", use_container_width=True):
-                consultor = st.session_state.consultor_selectbox
-                if consultor and consultor != "Selecione um nome":
+                Colaboradores = st.session_state.Colaboradores_selectbox
+                if Colaboradores and Colaboradores != "Selecione um nome":
                     st.success("✅ Horas extras registradas localmente!")
                     he_entry = {
                         'timestamp': datetime.now(),
-                        'consultor': consultor,
+                        'Colaboradores': Colaboradores,
                         'data': he_data,
                         'inicio': he_inicio,
                         'tempo': he_tempo,
@@ -972,7 +972,7 @@ with col_principal:
                     }
                     st.session_state.daily_logs.append(he_entry)
                 else:
-                    st.error("Selecione um consultor.")
+                    st.error("Selecione um Colaboradores.")
     
     elif st.session_state.active_view == "descanso":
         with st.container(border=True):
@@ -987,12 +987,12 @@ with col_principal:
             en_resultado = st.text_area("Resultado:", height=150)
             
             if st.button("Salvar Relato Localmente", type="primary", use_container_width=True):
-                consultor = st.session_state.consultor_selectbox
-                if consultor and consultor != "Selecione um nome":
+                Colaboradores = st.session_state.Colaboradores_selectbox
+                if Colaboradores and Colaboradores != "Selecione um nome":
                     st.success("✅ Relato salvo localmente!")
                     erro_entry = {
                         'timestamp': datetime.now(),
-                        'consultor': consultor,
+                        'Colaboradores': Colaboradores,
                         'titulo': en_titulo,
                         'objetivo': en_objetivo,
                         'relato': en_relato,
@@ -1003,7 +1003,7 @@ with col_principal:
                     time.sleep(1.5)
                     st.rerun()
                 else:
-                    st.error("Selecione um consultor.")
+                    st.error("Selecione um Colaboradores.")
     
     elif st.session_state.active_view == "relatorios":
         with st.container(border=True):
@@ -1032,10 +1032,10 @@ with col_principal:
                     )
                 
                 with col_f2:
-                    Colaboradores_Wyntech_nos_logs = list(set([log.get('consultor', 'N/A') for log in logs]))
-                    consultor_filtro = st.selectbox(
-                        "Consultor:",
-                        ["Todos"] + sorted(Colaboradores_Wyntech_nos_logs)
+                    Colaboradores_nos_logs = list(set([log.get('Colaboradores', 'N/A') for log in logs]))
+                    Colaboradores_filtro = st.selectbox(
+                        "Colaboradores:",
+                        ["Todos"] + sorted(Colaboradores_nos_logs)
                     )
                 
                 st.markdown("---")
@@ -1050,8 +1050,8 @@ with col_principal:
                 elif tipo_filtro == "Erros/Novidades":
                     logs_filtrados = [l for l in logs_filtrados if 'titulo' in l and 'relato' in l]
                 
-                if consultor_filtro != "Todos":
-                    logs_filtrados = [l for l in logs_filtrados if l.get('consultor') == consultor_filtro]
+                if Colaboradores_filtro != "Todos":
+                    logs_filtrados = [l for l in logs_filtrados if l.get('Colaboradores') == Colaboradores_filtro]
                 
                 st.markdown(f"#### 📋 Exibindo {len(logs_filtrados)} registro(s)")
                 
@@ -1065,13 +1065,13 @@ with col_principal:
                             timestamp = datetime.now()
                     
                     data_hora = timestamp.strftime("%d/%m/%Y %H:%M:%S")
-                    consultor = log.get('consultor', 'N/A')
+                    Colaboradores = log.get('Colaboradores', 'N/A')
                     
                     # Identifica tipo de registro
                     if 'usuario' in log:
                         # Atendimento
-                        with st.expander(f"📝 #{idx} - Atendimento - {consultor} - {data_hora}"):
-                            st.markdown(f"**👤 Consultor:** {consultor}")
+                        with st.expander(f"📝 #{idx} - Atendimento - {Colaboradores} - {data_hora}"):
+                            st.markdown(f"**👤 Colaboradores:** {Colaboradores}")
                             st.markdown(f"**📅 Data:** {log.get('data', 'N/A')}")
                             st.markdown(f"**👥 Usuário:** {log.get('usuario', 'N/A')}")
                             st.markdown(f"**🏢 Setor:** {log.get('setor', 'N/A')}")
@@ -1082,8 +1082,8 @@ with col_principal:
                     
                     elif 'inicio' in log and 'tempo' in log:
                         # Horas Extras
-                        with st.expander(f"⏰ #{idx} - Horas Extras - {consultor} - {data_hora}"):
-                            st.markdown(f"**👤 Consultor:** {consultor}")
+                        with st.expander(f"⏰ #{idx} - Horas Extras - {Colaboradores} - {data_hora}"):
+                            st.markdown(f"**👤 Colaboradores:** {Colaboradores}")
                             st.markdown(f"**📅 Data:** {log.get('data', 'N/A')}")
                             st.markdown(f"**🕐 Início:** {log.get('inicio', 'N/A')}")
                             st.markdown(f"**⏱️ Tempo Total:** {log.get('tempo', 'N/A')}")
@@ -1091,8 +1091,8 @@ with col_principal:
                     
                     elif 'titulo' in log and 'relato' in log:
                         # Erro/Novidade
-                        with st.expander(f"🐛 #{idx} - Erro/Novidade - {consultor} - {data_hora}"):
-                            st.markdown(f"**👤 Autor:** {consultor}")
+                        with st.expander(f"🐛 #{idx} - Erro/Novidade - {Colaboradores} - {data_hora}"):
+                            st.markdown(f"**👤 Autor:** {Colaboradores}")
                             st.markdown(f"**📌 Título:** {log.get('titulo', 'N/A')}")
                             st.markdown(f"**🎯 Objetivo:**")
                             st.text(log.get('objetivo', 'N/A'))
@@ -1139,7 +1139,7 @@ with col_disponibilidade:
         st.warning("HP/Emails/Whatsapp irão para bastão")
         st.image(GIF_URL_NEDRY, width=300)
     st.markdown("---")
-    st.header('Status dos(as) Colaboradores_Wyntech(as)')
+    st.header('Status dos(as) Colaboradores(as)')
     
     # Listas de status
     import re
@@ -1154,7 +1154,7 @@ with col_disponibilidade:
         'indisponivel': []
     }
     
-    for nome in Colaboradores_Wyntech:
+    for nome in Colaboradores:
         if nome in st.session_state.bastao_queue:
             ui_lists['fila'].append(nome)
         
