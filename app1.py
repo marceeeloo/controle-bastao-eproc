@@ -33,7 +33,7 @@ COLABORADORES = sorted([
 ])
 
 # --- Constantes de Opções ---
-REG_USUARIO_OPCOES = ["Cartório", "Externo"]
+REG_USUARIO_OPCOES = ["Cartório", "Gabinete", "Externo"]
 REG_SISTEMA_OPCOES = ["Conveniados", "Outros", "Eproc", "Themis", "JPE", "SIAP"]
 REG_CANAL_OPCOES = ["Presencial", "Telefone", "Email", "Whatsapp", "Outros"]
 REG_DESFECHO_OPCOES = ["Resolvido - Informática", "Escalonado"]
