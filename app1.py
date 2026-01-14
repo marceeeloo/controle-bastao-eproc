@@ -12,6 +12,12 @@ import random
 import base64
 import os
 
+import json
+from pathlib import Path
+
+# Arquivo de persistência
+STATE_FILE = Path("bastao_state.json")
+
 # --- Constantes de Colaboradores ---
 COLABORADORES = sorted([
     "Frederico Augusto Costa Gonçalves",
@@ -48,15 +54,92 @@ GIF_URL_ROTATION = 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmx4azVxbG
 GIF_URL_NEDRY = 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGNkMGx3YnNkcXQ2bHJmNTZtZThraHhuNmVoOTNmbG0wcDloOXAybiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7kyWoqTue3po4/giphy.gif'
 
 # ============================================
-
-# ============================================
-# SISTEMA DE CACHE PERSISTENTE
+# FUNÇÕES AUXILIARES
 # ============================================
 
-@st.cache_resource
-def get_shared_state():
-    """Cria estado compartilhado entre reloads"""
-    return {
+
+def save_state():
+    """Salva estado atual em JSON"""
+    try:
+        data = {
+            'bastao_queue': st.session_state.bastao_queue,
+            'status_texto': st.session_state.status_texto,
+            'bastao_start_time': st.session_state.bastao_start_time.isoformat() if st.session_state.bastao_start_time else None,
+            'bastao_counts': st.session_state.bastao_counts,
+            'auxilio_ativo': st.session_state.get('auxilio_ativo', False),
+            'simon_ranking': st.session_state.simon_ranking,
+            'daily_logs': st.session_state.daily_logs,
+            'checks': {nome: st.session_state.get(f'check_{nome}', False) for nome in COLABORADORES}
+        }
+        STATE_FILE.write_text(json.dumps(data, default=str, ensure_ascii=False, indent=2))
+    except:
+        pass
+
+def load_state():
+    """Carrega estado do JSON"""
+    try:
+        if STATE_FILE.exists():
+            data = json.loads(STATE_FILE.read_text())
+            st.session_state.bastao_queue = data.get('bastao_queue', [])
+            st.session_state.status_texto = data.get('status_texto', {nome: 'Indisponível' for nome in COLABORADORES})
+            
+            time_str = data.get('bastao_start_time')
+            st.session_state.bastao_start_time = datetime.fromisoformat(time_str) if time_str else None
+            
+            st.session_state.bastao_counts = data.get('bastao_counts', {nome: 0 for nome in COLABORADORES})
+            st.session_state.auxilio_ativo = data.get('auxilio_ativo', False)
+            st.session_state.simon_ranking = data.get('simon_ranking', [])
+            st.session_state.daily_logs = data.get('daily_logs', [])
+            
+            for nome, val in data.get('checks', {}).items():
+                st.session_state[f'check_{nome}'] = val
+            return True
+    except:
+        pass
+    return False
+
+
+
+def apply_modern_styles():
+    """Aplica estilos CSS modernos"""
+    st.markdown("""<style>
+    .main{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:2rem}
+    .stButton>button{border-radius:12px!important;font-weight:600!important;padding:.75rem 1.5rem!important;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)!important;transition:all .3s!important}
+    .stButton>button:hover{transform:translateY(-2px)!important;box-shadow:0 10px 15px -3px rgba(0,0,0,.1)!important}
+    .stButton>button[kind="primary"]{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:#fff!important;border:none!important}
+    .stSelectbox>div>div,.stTextInput>div>div,.stTextArea>div>div{border-radius:12px!important;border:2px solid #e2e8f0!important;transition:all .2s!important}
+    .stSelectbox>div>div:focus-within,.stTextInput>div>div:focus-within{border-color:#667eea!important;box-shadow:0 0 0 3px rgba(102,126,234,.1)!important}
+    .stSuccess{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(5,150,105,.1) 100%)!important;border-left:4px solid #10b981!important;border-radius:12px!important}
+    .stWarning{background:linear-gradient(135deg,rgba(245,158,11,.1) 0%,rgba(217,119,6,.1) 100%)!important;border-left:4px solid #f59e0b!important;border-radius:12px!important}
+    .stError{background:linear-gradient(135deg,rgba(239,68,68,.1) 0%,rgba(220,38,38,.1) 100%)!important;border-left:4px solid #ef4444!important;border-radius:12px!important}
+    .streamlit-expanderHeader{border-radius:12px!important;background:#fff!important;border:2px solid #e2e8f0!important;padding:1rem!important;box-shadow:0 1px 3px 0 rgba(0,0,0,.1)!important}
+    .streamlit-expanderHeader:hover{border-color:#667eea!important;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)!important}
+    ::-webkit-scrollbar{width:12px}
+    ::-webkit-scrollbar-track{background:#f1f5f9;border-radius:10px}
+    ::-webkit-scrollbar-thumb{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:10px;border:2px solid #f1f5f9}
+    hr{border:none!important;height:2px!important;background:linear-gradient(90deg,transparent 0%,#e2e8f0 50%,transparent 100%)!important;margin:2rem 0!important}
+    .dataframe{border-radius:12px!important;overflow:hidden!important;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)!important}
+    .dataframe thead tr th{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:#fff!important;font-weight:600!important;padding:1rem!important}
+    .dataframe tbody tr:nth-child(even){background-color:#f8fafc!important}
+    .dataframe tbody tr:hover{background-color:rgba(102,126,234,.05)!important}
+    </style>""", unsafe_allow_html=True)
+
+
+def format_time_duration(duration):
+    if not isinstance(duration, timedelta): return '--:--:--'
+    s = int(duration.total_seconds())
+    h, s = divmod(s, 3600)
+    m, s = divmod(s, 60)
+    return f'{h:02}:{m:02}:{s:02}'
+
+def init_session_state():
+    """Inicializa o estado da sessão"""
+    # Tentar carregar estado salvo
+    if load_state():
+        return  # Estado carregado com sucesso
+    
+    # Se não carregou, inicializar padrão
+    defaults = {
         'bastao_queue': [],
         'status_texto': {nome: 'Indisponível' for nome in COLABORADORES},
         'bastao_start_time': None,
@@ -74,65 +157,15 @@ def get_shared_state():
         'daily_logs': [],
         'success_message': None,
         'success_message_time': None,
-        'check_states': {nome: False for nome in COLABORADORES}
     }
-
-
-# FUNÇÕES AUXILIARES
-# ============================================
-
-def format_time_duration(duration):
-    if not isinstance(duration, timedelta): return '--:--:--'
-    s = int(duration.total_seconds())
-    h, s = divmod(s, 3600)
-    m, s = divmod(s, 60)
-    return f'{h:02}:{m:02}:{s:02}'
-
-
-def apply_modern_styles():
-    """Aplica estilos CSS modernos"""
-    st.markdown("""<style>
-    .main{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:2rem}
-    .stButton>button{border-radius:12px!important;font-weight:600!important;padding:.75rem 1.5rem!important;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)!important;transition:all .3s!important}
-    .stButton>button:hover{transform:translateY(-2px)!important;box-shadow:0 10px 15px -3px rgba(0,0,0,.1)!important}
-    .stButton>button[kind="primary"]{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:#fff!important;border:none!important}
-    .stSelectbox>div>div,.stTextInput>div>div,.stTextArea>div>div{border-radius:12px!important;border:2px solid #e2e8f0!important;transition:all .2s!important}
-    .stSelectbox>div>div:focus-within,.stTextInput>div>div:focus-within{border-color:#667eea!important;box-shadow:0 0 0 3px rgba(102,126,234,.1)!important}
-    .stSuccess{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(5,150,105,.1) 100%)!important;border-left:4px solid #10b981!important;border-radius:12px!important}
-    .stWarning{background:linear-gradient(135deg,rgba(245,158,11,.1) 0%,rgba(217,119,6,.1) 100%)!important;border-left:4px solid #f59e0b!important;border-radius:12px!important}
-    .stError{background:linear-gradient(135deg,rgba(239,68,68,.1) 0%,rgba(220,38,38,.1) 100%)!important;border-left:4px solid #ef4444!important;border-radius:12px!important}
-    .streamlit-expanderHeader{border-radius:12px!important;background:#fff!important;border:2px solid #e2e8f0!important;padding:1rem!important;transition:all .2s!important;box-shadow:0 1px 3px 0 rgba(0,0,0,.1)!important}
-    .streamlit-expanderHeader:hover{border-color:#667eea!important;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)!important}
-    ::-webkit-scrollbar{width:12px}
-    ::-webkit-scrollbar-track{background:#f1f5f9;border-radius:10px}
-    ::-webkit-scrollbar-thumb{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:10px;border:2px solid #f1f5f9}
-    hr{border:none!important;height:2px!important;background:linear-gradient(90deg,transparent 0%,#e2e8f0 50%,transparent 100%)!important;margin:2rem 0!important}
-    .dataframe{border-radius:12px!important;overflow:hidden!important;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)!important}
-    .dataframe thead tr th{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:#fff!important;font-weight:600!important;padding:1rem!important}
-    .dataframe tbody tr:nth-child(even){background-color:#f8fafc!important}
-    .dataframe tbody tr:hover{background-color:rgba(102,126,234,.05)!important}
-    </style>""", unsafe_allow_html=True)
-
-
-
-def init_session_state():
-    """Inicializa o estado da sessão usando cache compartilhado"""
-    shared = get_shared_state()
     
-    # Sincronizar session_state com shared_state
-    for key, default in shared.items():
-        if key == 'check_states':
-            # Tratar checkboxes separadamente
-            for nome, valor in default.items():
-                check_key = f'check_{nome}'
-                if check_key not in st.session_state:
-                    st.session_state[check_key] = valor
-        elif key not in st.session_state:
-            if key in ['bastao_queue', 'status_texto', 'bastao_counts', 'simon_ranking', 'daily_logs']:
-                # Copiar listas e dicts para evitar problemas
-                st.session_state[key] = shared[key].copy() if isinstance(shared[key], (list, dict)) else shared[key]
-            else:
-                st.session_state[key] = shared[key]
+    for key, default in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = default
+    
+    for nome in COLABORADORES:
+        if f'check_{nome}' not in st.session_state:
+            st.session_state[f'check_{nome}'] = False
 
 def find_next_holder_index(current_index, queue):
     if not queue: return -1
@@ -243,7 +276,7 @@ def rotate_bastao():
         
         st.session_state.success_message = f"🎉 Bastão passou de **{current_holder}** para **{next_holder}**!"
         st.session_state.success_message_time = datetime.now()
-        
+        save_state()
         st.rerun()
     else:
         st.warning('⚠️ Não há próximo(a) colaborador(a) elegível na fila.')
