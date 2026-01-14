@@ -12,8 +12,8 @@ import random
 import base64
 import os
 
-# --- Constantes de Consultores ---
-CONSULTORES = sorted([
+# --- Constantes de Colaboradores Wyntech ---
+Colaboradores Wyntech = sorted([
     "Alex Paulo da Silva",
     "Dirceu Gonçalves Siqueira Neto",
     "Douglas de Souza Gonçalves",
@@ -66,9 +66,9 @@ def init_session_state():
     """Inicializa o estado da sessão"""
     defaults = {
         'bastao_queue': [],
-        'status_texto': {nome: 'Indisponível' for nome in CONSULTORES},
+        'status_texto': {nome: 'Indisponível' for nome in Colaboradores Wyntech},
         'bastao_start_time': None,
-        'bastao_counts': {nome: 0 for nome in CONSULTORES},
+        'bastao_counts': {nome: 0 for nome in Colaboradores Wyntech},
         'rotation_gif_start_time': None,
         'gif_warning': False,
         'auxilio_ativo': False,
@@ -88,20 +88,20 @@ def init_session_state():
         if key not in st.session_state:
             st.session_state[key] = default
     
-    for nome in CONSULTORES:
+    for nome in Colaboradores Wyntech:
         if f'check_{nome}' not in st.session_state:
             st.session_state[f'check_{nome}'] = False
 
 def find_next_holder_index(current_index, queue):
     if not queue: return -1
-    num_consultores = len(queue)
-    if num_consultores == 0: return -1
-    next_idx = (current_index + 1) % num_consultores
+    num_Colaboradores Wyntech = len(queue)
+    if num_Colaboradores Wyntech == 0: return -1
+    next_idx = (current_index + 1) % num_Colaboradores Wyntech
     attempts = 0
-    while attempts < num_consultores:
+    while attempts < num_Colaboradores Wyntech:
         consultor = queue[next_idx]
         if st.session_state.get(f'check_{consultor}'): return next_idx
-        next_idx = (next_idx + 1) % num_consultores
+        next_idx = (next_idx + 1) % num_Colaboradores Wyntech
         attempts += 1
     return -1
 
@@ -117,7 +117,7 @@ def check_and_assume_baton():
     elif first_eligible_holder: should_have_baton = first_eligible_holder
 
     changed = False
-    for c in CONSULTORES:
+    for c in Colaboradores Wyntech:
         s_text = st.session_state.status_texto.get(c, '')
         if c != should_have_baton and 'Bastão' in s_text:
             st.session_state.status_texto[c] = 'Indisponível'
@@ -690,7 +690,7 @@ with c_topo_esq:
 with c_topo_dir:
     c_sub1, c_sub2 = st.columns([2, 1], vertical_alignment="bottom")
     with c_sub1:
-        novo_responsavel = st.selectbox("Assumir Bastão (Rápido)", options=["Selecione"] + CONSULTORES, 
+        novo_responsavel = st.selectbox("Assumir Bastão (Rápido)", options=["Selecione"] + Colaboradores Wyntech, 
                                        label_visibility="collapsed", key="quick_enter")
     with c_sub2:
         if st.button("🚀 Entrar", help="Ficar disponível na fila imediatamente"):
@@ -796,7 +796,7 @@ with col_principal:
     
     st.markdown("###")
     st.header("**Consultor(a)**")
-    st.selectbox('Selecione:', options=['Selecione um nome'] + CONSULTORES, key='consultor_selectbox', label_visibility='collapsed')
+    st.selectbox('Selecione:', options=['Selecione um nome'] + Colaboradores Wyntech, key='consultor_selectbox', label_visibility='collapsed')
     
     st.markdown("#### ")
     st.markdown("**Ações:**")
@@ -1032,10 +1032,10 @@ with col_principal:
                     )
                 
                 with col_f2:
-                    consultores_nos_logs = list(set([log.get('consultor', 'N/A') for log in logs]))
+                    Colaboradores Wyntech_nos_logs = list(set([log.get('consultor', 'N/A') for log in logs]))
                     consultor_filtro = st.selectbox(
                         "Consultor:",
-                        ["Todos"] + sorted(consultores_nos_logs)
+                        ["Todos"] + sorted(Colaboradores Wyntech_nos_logs)
                     )
                 
                 st.markdown("---")
@@ -1139,7 +1139,7 @@ with col_disponibilidade:
         st.warning("HP/Emails/Whatsapp irão para bastão")
         st.image(GIF_URL_NEDRY, width=300)
     st.markdown("---")
-    st.header('Status dos(as) Consultores(as)')
+    st.header('Status dos(as) Colaboradores Wyntech(as)')
     
     # Listas de status
     import re
@@ -1154,7 +1154,7 @@ with col_disponibilidade:
         'indisponivel': []
     }
     
-    for nome in CONSULTORES:
+    for nome in Colaboradores Wyntech:
         if nome in st.session_state.bastao_queue:
             ui_lists['fila'].append(nome)
         
