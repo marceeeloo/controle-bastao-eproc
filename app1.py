@@ -406,6 +406,18 @@ def apply_modern_styles():
             border-bottom-color: #1e293b !important;
             color: #e2e8f0 !important;
         }
+        
+        /* Captions e textos pequenos legíveis */
+        .stCaption {
+            color: #cbd5e1 !important;
+            font-style: normal !important;
+        }
+        
+        /* Sidebar textos */
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] .stMarkdown {
+            color: #cbd5e1 !important;
+        }
     }
     </style>""", unsafe_allow_html=True)
 
@@ -1273,9 +1285,9 @@ with col_principal:
         st.markdown(f'#### 2º em diante: {", ".join(restante)}')
     if not proximo and not restante:
         if responsavel:
-            st.markdown('*Apenas o responsável atual é elegível.*')
+            st.info('ℹ️ Apenas o responsável atual é elegível.')
         else:
-            st.markdown('*Ninguém elegível na fila.*')
+            st.info('ℹ️ Ninguém elegível na fila.')
     elif not restante and proximo:
         st.markdown("&nbsp;")
     
@@ -1549,7 +1561,7 @@ with col_disponibilidade:
     st.subheader(f'✅ Na Fila ({len(ui_lists["fila"])})')
     render_order = [c for c in queue if c in ui_lists["fila"]]
     if not render_order:
-        st.markdown('_Ninguém na fila._')
+        st.caption('Ninguém na fila.')
     else:
         for nome in render_order:
             col_nome, col_check = st.columns([0.85, 0.15], vertical_alignment="center")
@@ -1573,7 +1585,7 @@ with col_disponibilidade:
     def render_section_detalhada(title, icon, lista_tuplas, tag_color, keyword_removal):
         st.subheader(f'{icon} {title} ({len(lista_tuplas)})')
         if not lista_tuplas:
-            st.markdown(f'_Ninguém em {title.lower()}._')
+            st.caption(f'Ninguém em {title.lower()}.')
         else:
             for nome, desc in sorted(lista_tuplas, key=lambda x: x[0]):
                 col_nome, col_check = st.columns([0.85, 0.15], vertical_alignment="center")
@@ -1585,7 +1597,7 @@ with col_disponibilidade:
     def render_section_simples(title, icon, names, tag_color):
         st.subheader(f'{icon} {title} ({len(names)})')
         if not names:
-            st.markdown(f'_Ninguém em {title.lower()}._')
+            st.caption(f'Ninguém em {title.lower()}.')
         else:
             for nome in sorted(names):
                 col_nome, col_check = st.columns([0.85, 0.15], vertical_alignment="center")
