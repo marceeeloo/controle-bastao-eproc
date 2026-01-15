@@ -934,9 +934,9 @@ st.markdown("""
 <style>
 .header-card {
     background: white;
-    padding: 1.25rem;
+    padding: 1rem;
     border-radius: 12px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     border-bottom: 3px solid #2563eb;
 }
@@ -954,8 +954,6 @@ st.markdown("""
     margin: 0.375rem 0 0 0;
     font-size: 0.8125rem;
     font-weight: 500;
-}
-</style>
 }
 </style>
 
@@ -1096,9 +1094,9 @@ with col_principal:
         .responsavel-card {{
             background: white;
             border: 2px solid #e2e8f0;
-            padding: 1.25rem;
+            padding: 1rem;
             border-radius: 12px;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         }}
         
@@ -1221,7 +1219,7 @@ with col_principal:
         </div>
         """, unsafe_allow_html=True)
     
-    st.markdown("#")
+    st.markdown("")
     st.subheader("Próximos da Fila")
     
     # Exibir mensagem de sucesso se existir
@@ -1245,7 +1243,7 @@ with col_principal:
     elif not restante and proximo:
         st.markdown("&nbsp;")
     
-    st.markdown("#")
+    st.markdown("")
     st.subheader("**Colaborador(a)**")
     st.selectbox('Selecione:', options=['Selecione um nome'] + COLABORADORES, key='colaborador_selectbox', label_visibility='collapsed')
     
@@ -1254,7 +1252,7 @@ with col_principal:
     # Passar Bastão (destaque no topo)
     st.button('🎯 Passar', on_click=rotate_bastao, use_container_width=True, help='Passa o bastão', type='primary')
     
-    st.markdown("#")
+    st.markdown("")
     
     # Status: Almoço, Saída, Ausente
     row1_c1, row1_c2, row1_c3 = st.columns(3)
@@ -1263,7 +1261,7 @@ with col_principal:
     row1_c2.button('🚶 Saída', on_click=update_status, args=('Saída rápida', True,), use_container_width=True)
     row1_c3.button('👤 Ausente', on_click=update_status, args=('Ausente', True,), use_container_width=True)
     
-    st.markdown("#")
+    st.markdown("")
     
     # Atualizar
     if st.button('🔄 Atualizar', use_container_width=True):
