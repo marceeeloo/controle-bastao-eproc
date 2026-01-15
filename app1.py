@@ -62,7 +62,7 @@ COLABORADORES = sorted([
     "Warley Roberto de Oliveira Cruz",
     "Marcio Rodrigues Alves",
     "Igor Eduardo Martins",
-    "Leonardo goncalves fleury",
+    "Leonardo Gonçalves Fleury",
     "Marcelo dos Santos Dutra",
     "Daniely Cristina Cunha Mesquita",
     "Celso Daniel Vilano Cardoso",
