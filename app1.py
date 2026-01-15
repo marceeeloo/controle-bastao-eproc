@@ -914,9 +914,6 @@ def handle_simon_game():
         df_rank = pd.DataFrame(ranking)
         st.table(df_rank)
 
-def manual_rerun():
-    st.rerun()
-
 def toggle_view(view_name):
     if st.session_state.active_view == view_name:
         st.session_state.active_view = None
@@ -1031,6 +1028,69 @@ if proximo_index != -1:
 
 with col_principal:
     if responsavel:
+        # Barra sticky que fica fixa no topo ao rolar
+        st.markdown(f"""
+        <style>
+        .sticky-bar {{
+            position: fixed;
+            top: 3.5rem;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }}
+        
+        .sticky-bar.visible {{
+            opacity: 1;
+        }}
+        
+        .sticky-label {{
+            font-size: 0.75rem;
+            font-weight: 500;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }}
+        
+        .sticky-nome {{
+            font-size: 1.1rem;
+            font-weight: 700;
+        }}
+        </style>
+        
+        <div class="sticky-bar" id="stickyBar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex-shrink: 0;">
+                <rect x="10" y="2" width="4" height="20" rx="2" fill="white"/>
+                <circle cx="12" cy="3" r="2" fill="white"/>
+            </svg>
+            <span class="sticky-label">Bastão com:</span>
+            <span class="sticky-nome">{responsavel}</span>
+        </div>
+        
+        <script>
+        window.addEventListener('scroll', function() {{
+            const stickyBar = document.getElementById('stickyBar');
+            if (window.scrollY > 300) {{
+                stickyBar.classList.add('visible');
+            }} else {{
+                stickyBar.classList.remove('visible');
+            }}
+        }});
+        </script>
+        """, unsafe_allow_html=True)
+        
+        # Card normal do responsável
         st.markdown(f"""
         <style>
         .responsavel-card {{
@@ -1206,7 +1266,8 @@ with col_principal:
     st.markdown("#")
     
     # Atualizar
-    st.button('🔄 Atualizar', on_click=manual_rerun, use_container_width=True)
+    if st.button('🔄 Atualizar', use_container_width=True):
+        pass  # O Streamlit já atualiza automaticamente ao clicar
     
     st.markdown("---")
     
