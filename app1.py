@@ -15,6 +15,38 @@ import os
 import json
 from pathlib import Path
 
+# ==================== FORÇAR LIGHT MODE ====================
+st.set_page_config(
+    page_title="Controle de Bastão - Informática",
+    page_icon="🥂",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': "Sistema de Controle de Bastão - Informática TJMG"
+    }
+)
+
+# Forçar tema claro via CSS
+st.markdown("""
+<style>
+    /* Forçar tema claro */
+    :root {
+        color-scheme: light !important;
+    }
+    
+    [data-testid="stAppViewContainer"] {
+        background-color: #f1f5f9 !important;
+    }
+    
+    /* Remover opção de dark mode do menu */
+    button[kind="header"] {
+        display: none !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # Arquivo de persistência
 STATE_FILE = Path("bastao_state.json")
 
@@ -325,98 +357,6 @@ def apply_modern_styles():
     @media (max-width: 768px) {
         .block-container {
             padding: 0.5rem !important;
-        }
-    }
-    
-    /* ==================== MODO ESCURO ==================== */
-    @media (prefers-color-scheme: dark) {
-        .main {
-            background: #0f172a !important;
-        }
-        
-        /* Botões no dark mode */
-        .stButton > button {
-            background: #1e293b !important;
-            color: #f1f5f9 !important;
-            border-color: #334155 !important;
-        }
-        
-        .stButton > button:hover {
-            background: #334155 !important;
-            border-color: #475569 !important;
-        }
-        
-        .stButton > button[kind="primary"] {
-            background: #2563eb !important;
-            color: white !important;
-        }
-        
-        /* Inputs no dark mode */
-        .stSelectbox > div > div,
-        .stTextInput > div > div,
-        .stTextArea > div > div {
-            background: #1e293b !important;
-            border-color: #334155 !important;
-            color: #f1f5f9 !important;
-        }
-        
-        /* Headers no dark mode */
-        h1, h2, h3 {
-            color: #f1f5f9 !important;
-        }
-        
-        /* Expanders no dark mode */
-        .streamlit-expanderHeader {
-            background: #1e293b !important;
-            border-color: #334155 !important;
-            color: #f1f5f9 !important;
-        }
-        
-        .streamlit-expanderHeader:hover {
-            background: #334155 !important;
-        }
-        
-        /* Sidebar no dark mode */
-        [data-testid="stSidebar"] {
-            background: #1e293b !important;
-            border-right-color: #334155 !important;
-        }
-        
-        /* Métricas no dark mode */
-        [data-testid="stMetricValue"] {
-            color: #f1f5f9 !important;
-        }
-        
-        [data-testid="stMetricLabel"] {
-            color: #94a3b8 !important;
-        }
-        
-        /* Tabelas no dark mode */
-        .dataframe {
-            border-color: #334155 !important;
-        }
-        
-        .dataframe thead th {
-            background: #1e293b !important;
-            color: #f1f5f9 !important;
-            border-bottom-color: #334155 !important;
-        }
-        
-        .dataframe tbody td {
-            border-bottom-color: #1e293b !important;
-            color: #e2e8f0 !important;
-        }
-        
-        /* Captions e textos pequenos legíveis */
-        .stCaption {
-            color: #cbd5e1 !important;
-            font-style: normal !important;
-        }
-        
-        /* Sidebar textos */
-        [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] .stMarkdown {
-            color: #cbd5e1 !important;
         }
     }
     </style>""", unsafe_allow_html=True)
@@ -1019,10 +959,7 @@ st.markdown("""
     font-weight: 500;
 }
 
-@media (prefers-color-scheme: dark) {
-    .header-card {
-        background: #1e293b;
-    }
+
     
     .header-title {
         color: #f1f5f9;
@@ -1130,11 +1067,7 @@ with col_principal:
             line-height: 1.2;
         }}
         
-        @media (prefers-color-scheme: dark) {{
-            .responsavel-card {{
-                background: #1e293b;
-                border-color: #334155;
-            }}
+        
             
             .responsavel-label {{
                 color: #94a3b8;
@@ -1195,11 +1128,7 @@ with col_principal:
                 font-weight: 700;
             }}
             
-            @media (prefers-color-scheme: dark) {{
-                .metric-card {{
-                    background: #1e293b;
-                    border-color: #334155;
-                }}
+            
                 
                 .metric-label {{
                     color: #94a3b8;
@@ -1249,11 +1178,7 @@ with col_principal:
             font-weight: 500;
         }}
         
-        @media (prefers-color-scheme: dark) {{
-            .empty-card {{
-                background: #1e293b;
-                border-color: #334155;
-            }}
+        
             
             .empty-text {{
                 color: #60a5fa;
