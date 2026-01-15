@@ -1075,29 +1075,8 @@ with col_principal:
     row1_c1.button('🎯 Passar', on_click=rotate_bastao, use_container_width=True, help='Passa o bastão.', type='primary')
     
     row2_c1.button('🍽️ Almoço', on_click=update_status, args=('Almoço', True,), use_container_width=True)
-    row2_c2.button('🎙️ Sessão', on_click=toggle_view, args=('menu_sessao',), use_container_width=True)
-    row2_c3.button('🚶 Saída', on_click=update_status, args=('Saída rápida', True,), use_container_width=True)
-    row2_c4.button('👤 Ausente', on_click=update_status, args=('Ausente', True,), use_container_width=True)
-    
-    # Menus contextuais
-    if st.session_state.active_view == 'menu_sessao':
-        with st.container(border=True):
-            st.markdown("### Detalhes da Sessão")
-            sessao_desc = st.text_input("Qual Câmara/Sessão?", placeholder="Ex: 1ª Cível...")
-            col_s1, col_s2 = st.columns(2)
-            with col_s1:
-                if st.button("Confirmar Sessão", type="primary", use_container_width=True):
-                    if sessao_desc:
-                        status_final = f"Sessão: {sessao_desc}"
-                        update_status(status_final, force_exit_queue=True)
-                        st.session_state.active_view = None
-                        st.rerun()
-                    else:
-                        st.warning("Digite o nome da sessão.")
-            with col_s2:
-                if st.button("Cancelar", use_container_width=True, key='cancel_sessao'):
-                    st.session_state.active_view = None
-                    st.rerun()
+    row2_c2.button('🚶 Saída', on_click=update_status, args=('Saída rápida', True,), use_container_width=True)
+    row2_c3.button('👤 Ausente', on_click=update_status, args=('Ausente', True,), use_container_width=True)
     
     st.markdown("####")
     st.button('🔄 Atualizar (Manual)', on_click=manual_rerun, use_container_width=True)
@@ -1362,7 +1341,6 @@ with col_disponibilidade:
         'saida': [],
         'ausente': [],
         'atividade_especifica': [],
-        'sessao_especifica': [],
         'reuniao_especifica': [],
         'indisponivel': []
     }
@@ -1385,9 +1363,6 @@ with col_disponibilidade:
             if nome not in st.session_state.bastao_queue:
                 ui_lists['indisponivel'].append(nome)
         
-        if 'Sessão:' in status:
-            match = re.search(r'Sessão: (.*)', status)
-            if match:
                 ui_lists['sessao_especifica'].append((nome, match.group(1).split('|')[0].strip()))
         
                 ui_lists['reuniao_especifica'].append((nome, match.group(1).split('|')[0].strip()))
@@ -1451,7 +1426,6 @@ with col_disponibilidade:
     
     render_section_detalhada('Em Demanda', '📋', ui_lists['atividade_especifica'], 'orange', 'Atividade')
     render_section_simples('Almoço', '🍽️', ui_lists['almoco'], 'red')
-    render_section_detalhada('Sessão', '🎙️', ui_lists['sessao_especifica'], 'green', 'Sessão')
     render_section_simples('Saída rápida', '🚶', ui_lists['saida'], 'red')
     render_section_simples('Ausente', '👤', ui_lists['ausente'], 'violet')
     render_section_simples('Indisponível', '❌', ui_lists['indisponivel'], 'grey')
