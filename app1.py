@@ -937,9 +937,9 @@ st.markdown("""
 <style>
 .header-card {
     background: white;
-    padding: 2rem;
+    padding: 1.25rem;
     border-radius: 12px;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     border-bottom: 3px solid #2563eb;
 }
@@ -947,27 +947,18 @@ st.markdown("""
 .header-title {
     color: #0f172a;
     margin: 0;
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 600;
     letter-spacing: -0.02em;
 }
 
 .header-subtitle {
     color: #64748b;
-    margin: 0.5rem 0 0 0;
-    font-size: 0.875rem;
+    margin: 0.375rem 0 0 0;
+    font-size: 0.8125rem;
     font-weight: 500;
 }
-
-
-    
-    .header-title {
-        color: #f1f5f9;
-    }
-    
-    .header-subtitle {
-        color: #94a3b8;
-    }
+</style>
 }
 </style>
 
@@ -1045,37 +1036,26 @@ with col_principal:
         .responsavel-card {{
             background: white;
             border: 2px solid #e2e8f0;
-            padding: 2rem;
+            padding: 1.25rem;
             border-radius: 12px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         }}
         
         .responsavel-label {{
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: #64748b;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }}
         
         .responsavel-nome {{
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #0f172a;
+            color: #1e293b;
             line-height: 1.2;
-        }}
-        
-        
-            
-            .responsavel-label {{
-                color: #94a3b8;
-            }}
-            
-            .responsavel-nome {{
-                color: #f1f5f9;
-            }}
         }}
         </style>
         
@@ -1110,33 +1090,22 @@ with col_principal:
             .metric-card {{
                 background: white;
                 border: 1px solid #e2e8f0;
-                padding: 1.25rem;
+                padding: 0.875rem;
                 border-radius: 10px;
                 box-shadow: 0 1px 2px rgba(0,0,0,0.05);
             }}
             
             .metric-label {{
                 color: #64748b;
-                font-size: 0.875rem;
+                font-size: 0.8rem;
                 font-weight: 500;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.375rem;
             }}
             
             .metric-value {{
-                color: #0f172a;
-                font-size: 1.5rem;
+                color: #1e293b;
+                font-size: 1.25rem;
                 font-weight: 700;
-            }}
-            
-            
-                
-                .metric-label {{
-                    color: #94a3b8;
-                }}
-                
-                .metric-value {{
-                    color: #f1f5f9;
-                }}
             }}
             </style>
             
@@ -1192,8 +1161,8 @@ with col_principal:
         </div>
         """, unsafe_allow_html=True)
     
-    st.markdown("##")
-    st.header("Próximos da Fila")
+    st.markdown("#")
+    st.subheader("Próximos da Fila")
     
     # Exibir mensagem de sucesso se existir
     if st.session_state.get('success_message') and st.session_state.get('success_message_time'):
@@ -1216,17 +1185,16 @@ with col_principal:
     elif not restante and proximo:
         st.markdown("&nbsp;")
     
-    st.markdown("###")
-    st.header("**Colaborador(a)**")
+    st.markdown("#")
+    st.subheader("**Colaborador(a)**")
     st.selectbox('Selecione:', options=['Selecione um nome'] + COLABORADORES, key='colaborador_selectbox', label_visibility='collapsed')
     
-    st.markdown("#### ")
     st.markdown("**Ações:**")
     
     # Passar Bastão (destaque no topo)
     st.button('🎯 Passar', on_click=rotate_bastao, use_container_width=True, help='Passa o bastão', type='primary')
     
-    st.markdown("##")
+    st.markdown("#")
     
     # Status: Almoço, Saída, Ausente
     row1_c1, row1_c2, row1_c3 = st.columns(3)
@@ -1235,7 +1203,7 @@ with col_principal:
     row1_c2.button('🚶 Saída', on_click=update_status, args=('Saída rápida', True,), use_container_width=True)
     row1_c3.button('👤 Ausente', on_click=update_status, args=('Ausente', True,), use_container_width=True)
     
-    st.markdown("##")
+    st.markdown("#")
     
     # Atualizar
     st.button('🔄 Atualizar', on_click=manual_rerun, use_container_width=True)
