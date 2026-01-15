@@ -97,27 +97,338 @@ def load_state():
 
 
 def apply_modern_styles():
-    """Aplica estilos CSS modernos"""
+    """Aplica estilos CSS profissionais"""
     st.markdown("""<style>
-    .main{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:2rem}
-    .stButton>button{border-radius:12px!important;font-weight:600!important;padding:.75rem 1.5rem!important;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)!important;transition:all .3s!important}
-    .stButton>button:hover{transform:translateY(-2px)!important;box-shadow:0 10px 15px -3px rgba(0,0,0,.1)!important}
-    .stButton>button[kind="primary"]{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:#fff!important;border:none!important}
-    .stSelectbox>div>div,.stTextInput>div>div,.stTextArea>div>div{border-radius:12px!important;border:2px solid #e2e8f0!important;transition:all .2s!important}
-    .stSelectbox>div>div:focus-within,.stTextInput>div>div:focus-within{border-color:#667eea!important;box-shadow:0 0 0 3px rgba(102,126,234,.1)!important}
-    .stSuccess{background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(5,150,105,.1) 100%)!important;border-left:4px solid #10b981!important;border-radius:12px!important}
-    .stWarning{background:linear-gradient(135deg,rgba(245,158,11,.1) 0%,rgba(217,119,6,.1) 100%)!important;border-left:4px solid #f59e0b!important;border-radius:12px!important}
-    .stError{background:linear-gradient(135deg,rgba(239,68,68,.1) 0%,rgba(220,38,38,.1) 100%)!important;border-left:4px solid #ef4444!important;border-radius:12px!important}
-    .streamlit-expanderHeader{border-radius:12px!important;background:#fff!important;border:2px solid #e2e8f0!important;padding:1rem!important;box-shadow:0 1px 3px 0 rgba(0,0,0,.1)!important}
-    .streamlit-expanderHeader:hover{border-color:#667eea!important;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)!important}
-    ::-webkit-scrollbar{width:12px}
-    ::-webkit-scrollbar-track{background:#f1f5f9;border-radius:10px}
-    ::-webkit-scrollbar-thumb{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:10px;border:2px solid #f1f5f9}
-    hr{border:none!important;height:2px!important;background:linear-gradient(90deg,transparent 0%,#e2e8f0 50%,transparent 100%)!important;margin:2rem 0!important}
-    .dataframe{border-radius:12px!important;overflow:hidden!important;box-shadow:0 4px 6px -1px rgba(0,0,0,.1)!important}
-    .dataframe thead tr th{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)!important;color:#fff!important;font-weight:600!important;padding:1rem!important}
-    .dataframe tbody tr:nth-child(even){background-color:#f8fafc!important}
-    .dataframe tbody tr:hover{background-color:rgba(102,126,234,.05)!important}
+    /* ==================== RESET E BASE ==================== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    /* ==================== CORES PROFISSIONAIS ==================== */
+    :root {
+        --primary: #1e40af;
+        --primary-dark: #1e3a8a;
+        --secondary: #64748b;
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --border: #e2e8f0;
+        --success: #059669;
+        --warning: #d97706;
+        --error: #dc2626;
+    }
+    
+    /* ==================== BACKGROUND PRINCIPAL ==================== */
+    .main {
+        background-color: var(--background) !important;
+        padding: 2rem !important;
+    }
+    
+    .block-container {
+        padding: 2rem 1rem !important;
+        max-width: 1400px !important;
+    }
+    
+    /* ==================== TIPOGRAFIA ==================== */
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+        color: var(--text-primary);
+        line-height: 1.6;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--text-primary);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+    }
+    
+    /* ==================== BOTÕES PROFISSIONAIS ==================== */
+    .stButton > button {
+        background-color: var(--surface) !important;
+        color: var(--text-primary) !important;
+        border: 1.5px solid var(--border) !important;
+        border-radius: 8px !important;
+        padding: 0.625rem 1.25rem !important;
+        font-weight: 500 !important;
+        font-size: 0.875rem !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+    }
+    
+    .stButton > button:hover {
+        background-color: var(--background) !important;
+        border-color: var(--secondary) !important;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .stButton > button[kind="primary"] {
+        background-color: var(--primary) !important;
+        color: white !important;
+        border-color: var(--primary) !important;
+    }
+    
+    .stButton > button[kind="primary"]:hover {
+        background-color: var(--primary-dark) !important;
+        border-color: var(--primary-dark) !important;
+    }
+    
+    /* ==================== INPUTS PROFISSIONAIS ==================== */
+    .stSelectbox > div > div,
+    .stTextInput > div > div,
+    .stTextArea > div > div,
+    .stDateInput > div > div,
+    .stTimeInput > div > div {
+        background-color: var(--surface) !important;
+        border: 1.5px solid var(--border) !important;
+        border-radius: 8px !important;
+        padding: 0.5rem !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .stSelectbox > div > div:hover,
+    .stTextInput > div > div:hover,
+    .stTextArea > div > div:hover {
+        border-color: var(--secondary) !important;
+    }
+    
+    .stSelectbox > div > div:focus-within,
+    .stTextInput > div > div:focus-within,
+    .stTextArea > div > div:focus-within {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1) !important;
+    }
+    
+    /* ==================== CARDS E CONTAINERS ==================== */
+    div[data-testid="stVerticalBlock"] > div[style*="border"] {
+        background-color: var(--surface) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+    }
+    
+    /* ==================== ALERTAS PROFISSIONAIS ==================== */
+    .stSuccess {
+        background-color: #f0fdf4 !important;
+        border: 1px solid #86efac !important;
+        border-radius: 8px !important;
+        color: #166534 !important;
+        padding: 1rem !important;
+    }
+    
+    .stWarning {
+        background-color: #fffbeb !important;
+        border: 1px solid #fcd34d !important;
+        border-radius: 8px !important;
+        color: #92400e !important;
+        padding: 1rem !important;
+    }
+    
+    .stError {
+        background-color: #fef2f2 !important;
+        border: 1px solid #fca5a5 !important;
+        border-radius: 8px !important;
+        color: #991b1b !important;
+        padding: 1rem !important;
+    }
+    
+    .stInfo {
+        background-color: #eff6ff !important;
+        border: 1px solid #93c5fd !important;
+        border-radius: 8px !important;
+        color: #1e40af !important;
+        padding: 1rem !important;
+    }
+    
+    /* ==================== EXPANDERS PROFISSIONAIS ==================== */
+    .streamlit-expanderHeader {
+        background-color: var(--surface) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .streamlit-expanderHeader:hover {
+        background-color: var(--background) !important;
+        border-color: var(--secondary) !important;
+    }
+    
+    .streamlit-expanderContent {
+        background-color: var(--surface) !important;
+        border: 1px solid var(--border) !important;
+        border-top: none !important;
+        border-radius: 0 0 8px 8px !important;
+        padding: 1rem !important;
+    }
+    
+    /* ==================== TABELAS PROFISSIONAIS ==================== */
+    .dataframe {
+        border: 1px solid var(--border) !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+    }
+    
+    .dataframe thead tr th {
+        background-color: var(--primary) !important;
+        color: white !important;
+        font-weight: 600 !important;
+        padding: 0.75rem !important;
+        text-align: left !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .dataframe tbody tr {
+        border-bottom: 1px solid var(--border) !important;
+    }
+    
+    .dataframe tbody tr:hover {
+        background-color: var(--background) !important;
+    }
+    
+    .dataframe tbody td {
+        padding: 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* ==================== SIDEBAR PROFISSIONAL ==================== */
+    [data-testid="stSidebar"] {
+        background-color: var(--surface) !important;
+        border-right: 1px solid var(--border) !important;
+    }
+    
+    [data-testid="stSidebar"] .stButton > button {
+        width: 100% !important;
+    }
+    
+    /* ==================== CHECKBOXES ==================== */
+    .stCheckbox {
+        padding: 0.5rem !important;
+    }
+    
+    /* ==================== TOGGLE ==================== */
+    .stToggle {
+        padding: 0.5rem 0 !important;
+    }
+    
+    /* ==================== SCROLLBAR PROFISSIONAL ==================== */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: var(--background);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--secondary);
+    }
+    
+    /* ==================== DIVISOR ==================== */
+    hr {
+        border: none !important;
+        height: 1px !important;
+        background-color: var(--border) !important;
+        margin: 1.5rem 0 !important;
+    }
+    
+    /* ==================== HEADERS E TÍTULOS ==================== */
+    .stMarkdown h1 {
+        font-size: 1.875rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 1rem !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .stMarkdown h2 {
+        font-size: 1.5rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.75rem !important;
+        color: var(--text-primary) !important;
+    }
+    
+    .stMarkdown h3 {
+        font-size: 1.25rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+        color: var(--text-secondary) !important;
+    }
+    
+    /* ==================== MULTISELECT ==================== */
+    .stMultiSelect > div > div {
+        background-color: var(--surface) !important;
+        border: 1.5px solid var(--border) !important;
+        border-radius: 8px !important;
+    }
+    
+    .stMultiSelect span[data-baseweb="tag"] {
+        background-color: var(--primary) !important;
+        color: white !important;
+        border-radius: 6px !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* ==================== BADGES E TAGS ==================== */
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .badge-primary {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .badge-success {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    
+    .badge-warning {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    
+    /* ==================== RESPONSIVIDADE ==================== */
+    @media (max-width: 768px) {
+        .block-container {
+            padding: 1rem 0.5rem !important;
+        }
+        
+        .stButton > button {
+            padding: 0.5rem 1rem !important;
+            font-size: 0.8125rem !important;
+        }
+    }
+    
+    /* ==================== REMOVER PADDING EXTRA ==================== */
+    .element-container {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* ==================== AJUSTES FINOS ==================== */
+    button[title="View fullscreen"] {
+        display: none !important;
+    }
+    
+    .stDeployButton {
+        display: none !important;
+    }
     </style>""", unsafe_allow_html=True)
 
 
@@ -143,8 +454,6 @@ def init_session_state():
         'status_texto': {nome: 'Indisponível' for nome in COLABORADORES},
         'bastao_start_time': None,
         'bastao_counts': {nome: 0 for nome in COLABORADORES},
-        'rotation_gif_start_time': None,
-        'gif_warning': False,
         'auxilio_ativo': False,
         'active_view': None,
         'chamado_guide_step': 0,
@@ -219,8 +528,6 @@ def check_and_assume_baton():
     return changed
 
 def toggle_queue(colaborador):
-    st.session_state.gif_warning = False
-    st.session_state.rotation_gif_start_time = None
     
     if colaborador in st.session_state.bastao_queue:
         st.session_state.bastao_queue.remove(colaborador)
@@ -239,8 +546,6 @@ def toggle_queue(colaborador):
 
 def rotate_bastao():
     """Passa o bastão para o próximo colaborador"""
-    st.session_state.gif_warning = False
-    st.session_state.rotation_gif_start_time = None
     
     # Verificar quem está selecionado
     selected = st.session_state.get('colaborador_selectbox')
@@ -256,7 +561,6 @@ def rotate_bastao():
     if selected != current_holder:
         st.error(f'❌ Somente **{current_holder}** pode passar o bastão!')
         st.info(f'💡 Selecione "{current_holder}" no menu acima para passar o bastão.')
-        st.session_state.gif_warning = True
         return
     
     if not queue or current_holder not in queue:
@@ -286,7 +590,6 @@ def rotate_bastao():
         st.session_state.bastao_start_time = datetime.now()
         
         st.session_state.bastao_counts[current_holder] = st.session_state.bastao_counts.get(current_holder, 0) + 1
-        st.session_state.rotation_gif_start_time = datetime.now()
         
         st.session_state.success_message = f"🎉 Bastão passou de **{current_holder}** para **{next_holder}**!"
         st.session_state.success_message_time = datetime.now()
@@ -298,8 +601,6 @@ def rotate_bastao():
 
 def update_status(new_status_part, force_exit_queue=False):
     selected = st.session_state.colaborador_selectbox
-    st.session_state.gif_warning = False
-    st.session_state.rotation_gif_start_time = None
     
     if not selected or selected == 'Selecione um nome':
         st.warning('Selecione um(a) colaborador(a).')
@@ -338,7 +639,6 @@ def update_status(new_status_part, force_exit_queue=False):
         check_and_assume_baton()
 
 def leave_specific_status(colaborador, status_type_to_remove):
-    st.session_state.gif_warning = False
     old_status = st.session_state.status_texto.get(colaborador, '')
     parts = [p.strip() for p in old_status.split('|')]
     new_parts = [p for p in parts if status_type_to_remove not in p and p]
@@ -349,53 +649,12 @@ def leave_specific_status(colaborador, status_type_to_remove):
     check_and_assume_baton()
 
 def enter_from_indisponivel(colaborador):
-    st.session_state.gif_warning = False
     if colaborador not in st.session_state.bastao_queue:
         st.session_state.bastao_queue.append(colaborador)
     st.session_state[f'check_{colaborador}'] = True
     st.session_state.status_texto[colaborador] = ''
     check_and_assume_baton()
 
-def render_fireworks():
-    fireworks_css = """
-    <style>
-    @keyframes firework {
-      0% { transform: translate(var(--x), var(--initialY)); width: var(--initialSize); opacity: 1; }
-      50% { width: 0.5vmin; opacity: 1; }
-      100% { width: var(--finalSize); opacity: 0; }
-    }
-    .firework,
-    .firework::before,
-    .firework::after {
-      --initialSize: 0.5vmin; --finalSize: 45vmin; --particleSize: 0.2vmin;
-      --color1: #ff0000; --color2: #ffd700; --color3: #b22222; --color4: #daa520; --color5: #ff4500; --color6: #b8860b;
-      --y: -30vmin; --x: -50%; --initialY: 60vmin;
-      content: ""; animation: firework 2s infinite; position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, var(--y)); width: var(--initialSize); aspect-ratio: 1;
-      background: radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 50% 0%,
-        radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 100% 50%,
-        radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 50% 100%,
-        radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 0% 50%,
-        radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 80% 90%,
-        radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 95% 90%;
-      background-size: var(--initialSize) var(--initialSize); background-repeat: no-repeat;
-    }
-    .firework::before { --x: -50%; --y: -50%; --initialY: -50%; transform: translate(-50%, -50%) rotate(40deg) scale(1.3) rotateY(40deg); }
-    .firework::after { --x: -50%; --y: -50%; --initialY: -50%; transform: translate(-50%, -50%) rotate(170deg) scale(1.15) rotateY(-30deg); }
-    .firework:nth-child(2) { --x: 30vmin; }
-    .firework:nth-child(2), .firework:nth-child(2)::before, .firework:nth-child(2)::after {
-      --color1: #ff0000; --color2: #ffd700; --color3: #8b0000; --color4: #daa520; --color5: #ff6347; --color6: #f0e68c;  
-      --finalSize: 40vmin; left: 30%; top: 60%; animation-delay: -0.25s;
-    }
-    .firework:nth-child(3) { --x: -30vmin; --y: -50vmin; }
-    .firework:nth-child(3), .firework:nth-child(3)::before, .firework:nth-child(3)::after {
-      --color1: #ffd700; --color2: #ff4500; --color3: #b8860b; --color4: #cd5c5c; --color5: #800000; --color6: #ffa500;
-      --finalSize: 35vmin; left: 70%; top: 60%; animation-delay: -0.4s;
-    }
-    </style>
-    <div class="firework"></div><div class="firework"></div><div class="firework"></div>
-    """
-    st.markdown(fireworks_css, unsafe_allow_html=True)
 
 def gerar_html_relatorio(logs_filtrados):
     """Gera relatório HTML formatado"""
@@ -739,8 +998,6 @@ def on_auxilio_change():
     pass
 
 def manual_rerun():
-    st.session_state.gif_warning = False
-    st.session_state.rotation_gif_start_time = None
     st.rerun()
 
 def toggle_view(view_name):
@@ -759,52 +1016,45 @@ st.set_page_config(page_title="Controle Bastão Informática 2026", layout="wide
 init_session_state()
 apply_modern_styles()
 st.components.v1.html("<script>window.scrollTo(0, 0);</script>", height=0)
-render_fireworks()
 
-# Header
-c_topo_esq, c_topo_dir = st.columns([2, 1], vertical_alignment="bottom")
-with c_topo_esq:
-    st.markdown(f"""<div style="display: flex; align-items: center; gap: 15px;">
-    <h1 style="margin: 0; padding: 0; font-size: 2.2rem; color: #FFD700; text-shadow: 1px 1px 2px #B8860B;">
-    Controle Bastão Informática 2026 {BASTAO_EMOJI}</h1>
-    <img src="{GIF_BASTAO_HOLDER}" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #FFD700;">
-    </div>""", unsafe_allow_html=True)
+# Header Profissional
+st.markdown("""
+<div style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div>
+            <h1 style="color: white; margin: 0; font-size: 1.875rem; font-weight: 700; letter-spacing: -0.02em;">
+                Sistema de Controle de Bastão
+            </h1>
+            <p style="color: rgba(255, 255, 255, 0.8); margin: 0.5rem 0 0 0; font-size: 0.875rem;">
+                Setor de Informática • TJMG • 2026
+            </p>
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 8px; backdrop-filter: blur(10px);">
+            <div style="font-size: 3rem; line-height: 1;">{BASTAO_EMOJI}</div>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-with c_topo_dir:
-    c_sub1, c_sub2 = st.columns([2, 1], vertical_alignment="bottom")
-    with c_sub1:
-        novo_responsavel = st.selectbox("Assumir Bastão (Rápido)", options=["Selecione"] + COLABORADORES, 
-                                       label_visibility="collapsed", key="quick_enter")
-    with c_sub2:
-        if st.button("🚀 Entrar", help="Ficar disponível na fila imediatamente"):
-            if novo_responsavel and novo_responsavel != "Selecione":
-                toggle_queue(novo_responsavel)
-                st.session_state.colaborador_selectbox = novo_responsavel
-                st.success(f"{novo_responsavel} agora está na fila!")
-                st.rerun()
+# Entrada rápida na fila
+col_quick1, col_quick2, col_quick3 = st.columns([2, 2, 1])
+with col_quick1:
+    st.markdown("**Entrada Rápida:**")
+with col_quick2:
+    novo_responsavel = st.selectbox("Selecione colaborador", options=["Selecione"] + COLABORADORES, 
+                                   label_visibility="collapsed", key="quick_enter")
+with col_quick3:
+    if st.button("Entrar na Fila", help="Ficar disponível imediatamente", use_container_width=True):
+        if novo_responsavel and novo_responsavel != "Selecione":
+            toggle_queue(novo_responsavel)
+            st.session_state.colaborador_selectbox = novo_responsavel
+            st.success(f"✅ {novo_responsavel} entrou na fila!")
+            st.rerun()
 
-st.markdown("<hr style='border: 1px solid #FFD700; margin-top: 5px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+st.markdown("---")
 
-# GIFs e avisos
-gif_start_time = st.session_state.get('rotation_gif_start_time')
-show_gif = False
-refresh_interval = 8000
-
-if gif_start_time:
-    elapsed = (datetime.now() - gif_start_time).total_seconds()
-    if elapsed < 20:
-        show_gif = True
-        refresh_interval = 2000
-    else:
-        st.session_state.rotation_gif_start_time = None
-
-st_autorefresh(interval=refresh_interval, key='auto_rerun_key')
-
-if show_gif:
-    st.image(GIF_URL_ROTATION, width=200, caption='Bastão Passado!')
-if st.session_state.get('gif_warning', False):
-    st.error('🚫 Ação inválida! Verifique as regras.')
-    st.image(GIF_URL_WARNING, width=150)
+# Auto-refresh
+st_autorefresh(interval=8000, key='auto_rerun_key')
 
 # Layout principal
 col_principal, col_disponibilidade = st.columns([1.5, 1])
@@ -832,28 +1082,38 @@ if proximo_index != -1:
         checked_count += 1
 
 with col_principal:
-    st.header("Responsável pelo Bastão")
     if responsavel:
-        bg_color = "linear-gradient(135deg, #FFF8DC 0%, #FFFFFF 100%)"
-        border_color = "#FFD700"
-        text_color = "#000080"
-        st.markdown(f"""<div style="background: {bg_color}; border: 3px solid {border_color}; padding: 25px; 
-        border-radius: 15px; display: flex; align-items: center; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); margin-bottom: 20px;">
-        <div style="flex-shrink: 0; margin-right: 25px;">
-        <img src="{GIF_BASTAO_HOLDER}" style="width: 90px; height: 90px; border-radius: 50%; border: 2px solid {border_color};"></div>
-        <div><span style="font-size: 14px; color: #555; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px;">
-        Atualmente com:</span><br>
-        <span style="font-size: 42px; font-weight: 800; color: {text_color}; line-height: 1.1;">{responsavel}</span>
-        </div></div>""", unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="background: white; border: 2px solid #e2e8f0; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <div style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); width: 80px; height: 80px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    {BASTAO_EMOJI}
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin-bottom: 0.5rem;">
+                        Responsável Atual
+                    </div>
+                    <div style="font-size: 1.875rem; font-weight: 700; color: #0f172a; line-height: 1.2;">
+                        {responsavel}
+                    </div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         
         duration = timedelta()
         if st.session_state.bastao_start_time:
             duration = datetime.now() - st.session_state.bastao_start_time
-        st.caption(f"⏱️ Tempo com o bastão: **{format_time_duration(duration)}**")
+        
+        col_metric1, col_metric2 = st.columns(2)
+        with col_metric1:
+            st.metric("⏱️ Tempo com Bastão", format_time_duration(duration))
+        with col_metric2:
+            st.metric("🔄 Rodadas Hoje", st.session_state.bastao_counts.get(responsavel, 0))
     else:
-        st.markdown('<h2>(Ninguém com o bastão)</h2>', unsafe_allow_html=True)
+        st.info("ℹ️ Nenhum colaborador com o bastão no momento")
     
-    st.markdown("###")
+    st.markdown("##")
     st.header("Próximos da Fila")
     
     # Exibir mensagem de sucesso se existir
@@ -1217,8 +1477,7 @@ with col_disponibilidade:
     st.markdown("###")
     st.toggle("Auxílio HP/Emails/Whatsapp", key='auxilio_ativo', on_change=on_auxilio_change)
     if st.session_state.get('auxilio_ativo'):
-        st.warning("HP/Emails/Whatsapp irão para bastão")
-        st.image(GIF_URL_NEDRY, width=300)
+        st.warning("⚠️ HP/Emails/Whatsapp irão para bastão")
     st.markdown("---")
     st.header('Status dos(as) Colaboradores(as)')
     
