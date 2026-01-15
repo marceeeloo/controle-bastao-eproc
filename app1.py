@@ -1075,13 +1075,11 @@ with col_principal:
     # Ferramentas
     st.markdown("### 🛠️ Ferramentas")
     
-    c_tool1, c_tool2, c_tool3 = st.columns(3)
-    c_tool4, c_tool5, c_tool6 = st.columns(3)
+    c_tool1, c_tool2, c_tool3, c_tool4, c_tool5 = st.columns(5)
     
     c_tool1.button("📝 Atendimento", help="Registrar Atendimento", use_container_width=True, on_click=toggle_view, args=("atendimentos",))
     c_tool2.button("⏰ H. Extras", help="Registrar Horas Extras", use_container_width=True, on_click=toggle_view, args=("hextras",))
     c_tool3.button("🐛 Erro/Novidade", help="Relatar Erro ou Novidade", use_container_width=True, on_click=toggle_view, args=("erro_novidade",))
-    
     c_tool4.button("📊 Relatórios", help="Ver Registros Salvos", use_container_width=True, on_click=toggle_view, args=("relatorios",))
     c_tool5.button("🧠 Descanso", help="Jogo e Ranking", use_container_width=True, on_click=toggle_view, args=("descanso",))
     
