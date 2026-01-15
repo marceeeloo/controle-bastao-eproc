@@ -11,7 +11,6 @@ from streamlit_autorefresh import st_autorefresh
 import random
 import base64
 import os
-
 import json
 from pathlib import Path
 
