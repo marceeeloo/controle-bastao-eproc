@@ -97,340 +97,239 @@ def load_state():
 
 
 def apply_modern_styles():
-    """Aplica estilos CSS profissionais"""
+    """Aplica design profissional moderno"""
     st.markdown("""<style>
-    /* ==================== RESET E BASE ==================== */
+    /* Importar fonte moderna */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    /* Reset e Base */
     * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
     }
     
-    /* ==================== CORES PROFISSIONAIS ==================== */
-    :root {
-        --primary: #1e40af;
-        --primary-dark: #1e3a8a;
-        --secondary: #64748b;
-        --background: #f8fafc;
-        --surface: #ffffff;
-        --text-primary: #0f172a;
-        --text-secondary: #475569;
-        --border: #e2e8f0;
-        --success: #059669;
-        --warning: #d97706;
-        --error: #dc2626;
-    }
-    
-    /* ==================== BACKGROUND PRINCIPAL ==================== */
     .main {
-        background-color: var(--background) !important;
-        padding: 2rem !important;
+        background: #f1f5f9 !important;
+        padding: 1.5rem !important;
     }
     
+    /* Container principal */
     .block-container {
-        padding: 2rem 1rem !important;
         max-width: 1400px !important;
+        padding: 1rem !important;
     }
     
-    /* ==================== TIPOGRAFIA ==================== */
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
-        color: var(--text-primary);
-        line-height: 1.6;
+    /* Remover header padrão Streamlit */
+    header {
+        background: transparent !important;
     }
     
-    h1, h2, h3, h4, h5, h6 {
-        color: var(--text-primary);
-        font-weight: 600;
-        letter-spacing: -0.02em;
-    }
-    
-    /* ==================== BOTÕES PROFISSIONAIS ==================== */
+    /* Botões modernos */
     .stButton > button {
-        background-color: var(--surface) !important;
-        color: var(--text-primary) !important;
-        border: 1.5px solid var(--border) !important;
-        border-radius: 8px !important;
-        padding: 0.625rem 1.25rem !important;
+        background: white !important;
+        color: #0f172a !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding: 0.6rem 1.2rem !important;
         font-weight: 500 !important;
         font-size: 0.875rem !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
     }
     
     .stButton > button:hover {
-        background-color: var(--background) !important;
-        border-color: var(--secondary) !important;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
+        transform: translateY(-1px) !important;
     }
     
     .stButton > button[kind="primary"] {
-        background-color: var(--primary) !important;
+        background: #2563eb !important;
         color: white !important;
-        border-color: var(--primary) !important;
+        border-color: #2563eb !important;
     }
     
     .stButton > button[kind="primary"]:hover {
-        background-color: var(--primary-dark) !important;
-        border-color: var(--primary-dark) !important;
+        background: #1d4ed8 !important;
+        border-color: #1d4ed8 !important;
     }
     
-    /* ==================== INPUTS PROFISSIONAIS ==================== */
+    /* Inputs */
     .stSelectbox > div > div,
     .stTextInput > div > div,
-    .stTextArea > div > div,
-    .stDateInput > div > div,
-    .stTimeInput > div > div {
-        background-color: var(--surface) !important;
-        border: 1.5px solid var(--border) !important;
-        border-radius: 8px !important;
-        padding: 0.5rem !important;
-        transition: all 0.2s ease !important;
-    }
-    
-    .stSelectbox > div > div:hover,
-    .stTextInput > div > div:hover,
-    .stTextArea > div > div:hover {
-        border-color: var(--secondary) !important;
-    }
-    
-    .stSelectbox > div > div:focus-within,
-    .stTextInput > div > div:focus-within,
-    .stTextArea > div > div:focus-within {
-        border-color: var(--primary) !important;
-        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1) !important;
-    }
-    
-    /* ==================== CARDS E CONTAINERS ==================== */
-    div[data-testid="stVerticalBlock"] > div[style*="border"] {
-        background-color: var(--surface) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 12px !important;
-        padding: 1.5rem !important;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
-    }
-    
-    /* ==================== ALERTAS PROFISSIONAIS ==================== */
-    .stSuccess {
-        background-color: #f0fdf4 !important;
-        border: 1px solid #86efac !important;
-        border-radius: 8px !important;
-        color: #166534 !important;
-        padding: 1rem !important;
-    }
-    
-    .stWarning {
-        background-color: #fffbeb !important;
-        border: 1px solid #fcd34d !important;
-        border-radius: 8px !important;
-        color: #92400e !important;
-        padding: 1rem !important;
-    }
-    
-    .stError {
-        background-color: #fef2f2 !important;
-        border: 1px solid #fca5a5 !important;
-        border-radius: 8px !important;
-        color: #991b1b !important;
-        padding: 1rem !important;
-    }
-    
-    .stInfo {
-        background-color: #eff6ff !important;
-        border: 1px solid #93c5fd !important;
-        border-radius: 8px !important;
-        color: #1e40af !important;
-        padding: 1rem !important;
-    }
-    
-    /* ==================== EXPANDERS PROFISSIONAIS ==================== */
-    .streamlit-expanderHeader {
-        background-color: var(--surface) !important;
-        border: 1px solid var(--border) !important;
-        border-radius: 8px !important;
-        padding: 1rem !important;
-        font-weight: 500 !important;
-        transition: all 0.2s ease !important;
-    }
-    
-    .streamlit-expanderHeader:hover {
-        background-color: var(--background) !important;
-        border-color: var(--secondary) !important;
-    }
-    
-    .streamlit-expanderContent {
-        background-color: var(--surface) !important;
-        border: 1px solid var(--border) !important;
-        border-top: none !important;
-        border-radius: 0 0 8px 8px !important;
-        padding: 1rem !important;
-    }
-    
-    /* ==================== TABELAS PROFISSIONAIS ==================== */
-    .dataframe {
-        border: 1px solid var(--border) !important;
-        border-radius: 8px !important;
-        overflow: hidden !important;
-    }
-    
-    .dataframe thead tr th {
-        background-color: var(--primary) !important;
-        color: white !important;
-        font-weight: 600 !important;
-        padding: 0.75rem !important;
-        text-align: left !important;
+    .stTextArea > div > div {
+        border-radius: 10px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: white !important;
         font-size: 0.875rem !important;
     }
     
-    .dataframe tbody tr {
-        border-bottom: 1px solid var(--border) !important;
+    .stSelectbox > div > div:hover {
+        border-color: #cbd5e1 !important;
     }
     
-    .dataframe tbody tr:hover {
-        background-color: var(--background) !important;
+    .stSelectbox > div > div:focus-within {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+    }
+    
+    /* Headers */
+    h1, h2, h3 {
+        color: #0f172a !important;
+        font-weight: 600 !important;
+    }
+    
+    h1 {
+        font-size: 1.75rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    h2 {
+        font-size: 1.25rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    h3 {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.5rem !important;
+        color: #475569 !important;
+    }
+    
+    /* Alertas */
+    .stSuccess, .stError, .stWarning, .stInfo {
+        border-radius: 10px !important;
+        border: 1px solid !important;
+        padding: 0.875rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .stSuccess {
+        background: #f0fdf4 !important;
+        border-color: #bbf7d0 !important;
+        color: #166534 !important;
+    }
+    
+    .stError {
+        background: #fef2f2 !important;
+        border-color: #fecaca !important;
+        color: #991b1b !important;
+    }
+    
+    .stWarning {
+        background: #fefce8 !important;
+        border-color: #fef08a !important;
+        color: #854d0e !important;
+    }
+    
+    .stInfo {
+        background: #eff6ff !important;
+        border-color: #bfdbfe !important;
+        color: #1e40af !important;
+    }
+    
+    /* Expanders */
+    .streamlit-expanderHeader {
+        background: white !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        padding: 0.875rem !important;
+    }
+    
+    .streamlit-expanderHeader:hover {
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+    }
+    
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background: white !important;
+        border-right: 1px solid #e2e8f0 !important;
+    }
+    
+    /* Métricas */
+    [data-testid="stMetricValue"] {
+        font-size: 1.5rem !important;
+        font-weight: 600 !important;
+        color: #0f172a !important;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        font-size: 0.875rem !important;
+        color: #64748b !important;
+        font-weight: 500 !important;
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    
+    /* Divisor */
+    hr {
+        border: none !important;
+        height: 1px !important;
+        background: #e2e8f0 !important;
+        margin: 1.5rem 0 !important;
+    }
+    
+    /* Tabelas */
+    .dataframe {
+        font-size: 0.875rem !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+    }
+    
+    .dataframe thead th {
+        background: #f8fafc !important;
+        color: #0f172a !important;
+        font-weight: 600 !important;
+        padding: 0.75rem !important;
+        border-bottom: 2px solid #e2e8f0 !important;
     }
     
     .dataframe tbody td {
         padding: 0.75rem !important;
-        font-size: 0.875rem !important;
+        border-bottom: 1px solid #f1f5f9 !important;
     }
     
-    /* ==================== SIDEBAR PROFISSIONAL ==================== */
-    [data-testid="stSidebar"] {
-        background-color: var(--surface) !important;
-        border-right: 1px solid var(--border) !important;
-    }
-    
-    [data-testid="stSidebar"] .stButton > button {
-        width: 100% !important;
-    }
-    
-    /* ==================== CHECKBOXES ==================== */
+    /* Checkbox */
     .stCheckbox {
-        padding: 0.5rem !important;
-    }
-    
-    /* ==================== TOGGLE ==================== */
-    .stToggle {
-        padding: 0.5rem 0 !important;
-    }
-    
-    /* ==================== SCROLLBAR PROFISSIONAL ==================== */
-    ::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: var(--background);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 5px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--secondary);
-    }
-    
-    /* ==================== DIVISOR ==================== */
-    hr {
-        border: none !important;
-        height: 1px !important;
-        background-color: var(--border) !important;
-        margin: 1.5rem 0 !important;
-    }
-    
-    /* ==================== HEADERS E TÍTULOS ==================== */
-    .stMarkdown h1 {
-        font-size: 1.875rem !important;
-        font-weight: 700 !important;
-        margin-bottom: 1rem !important;
-        color: var(--text-primary) !important;
-    }
-    
-    .stMarkdown h2 {
-        font-size: 1.5rem !important;
-        font-weight: 600 !important;
-        margin-bottom: 0.75rem !important;
-        color: var(--text-primary) !important;
-    }
-    
-    .stMarkdown h3 {
-        font-size: 1.25rem !important;
-        font-weight: 600 !important;
-        margin-bottom: 0.5rem !important;
-        color: var(--text-secondary) !important;
-    }
-    
-    /* ==================== MULTISELECT ==================== */
-    .stMultiSelect > div > div {
-        background-color: var(--surface) !important;
-        border: 1.5px solid var(--border) !important;
-        border-radius: 8px !important;
-    }
-    
-    .stMultiSelect span[data-baseweb="tag"] {
-        background-color: var(--primary) !important;
-        color: white !important;
-        border-radius: 6px !important;
         font-size: 0.875rem !important;
     }
     
-    /* ==================== BADGES E TAGS ==================== */
-    .badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+    /* Remover elementos desnecessários */
+    .stDeployButton {
+        display: none !important;
     }
     
-    .badge-primary {
-        background-color: #dbeafe;
-        color: #1e40af;
-    }
-    
-    .badge-success {
-        background-color: #d1fae5;
-        color: #065f46;
-    }
-    
-    .badge-warning {
-        background-color: #fef3c7;
-        color: #92400e;
-    }
-    
-    /* ==================== RESPONSIVIDADE ==================== */
-    @media (max-width: 768px) {
-        .block-container {
-            padding: 1rem 0.5rem !important;
-        }
-        
-        .stButton > button {
-            padding: 0.5rem 1rem !important;
-            font-size: 0.8125rem !important;
-        }
-    }
-    
-    /* ==================== REMOVER PADDING EXTRA ==================== */
-    .element-container {
-        margin-bottom: 0.5rem;
-    }
-    
-    /* ==================== AJUSTES FINOS ==================== */
     button[title="View fullscreen"] {
         display: none !important;
     }
     
-    .stDeployButton {
-        display: none !important;
+    /* Responsivo */
+    @media (max-width: 768px) {
+        .block-container {
+            padding: 0.5rem !important;
+        }
     }
     </style>""", unsafe_allow_html=True)
-
 
 def format_time_duration(duration):
     if not isinstance(duration, timedelta): return '--:--:--'
@@ -1017,41 +916,61 @@ init_session_state()
 apply_modern_styles()
 st.components.v1.html("<script>window.scrollTo(0, 0);</script>", height=0)
 
-# Header Profissional
+# ==================== HEADER ====================
 st.markdown("""
-<div style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+<div style="background: white; padding: 1.5rem 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-bottom: 3px solid #2563eb;">
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <div>
-            <h1 style="color: white; margin: 0; font-size: 1.875rem; font-weight: 700; letter-spacing: -0.02em;">
-                Sistema de Controle de Bastão
-            </h1>
-            <p style="color: rgba(255, 255, 255, 0.8); margin: 0.5rem 0 0 0; font-size: 0.875rem;">
-                Setor de Informática • TJMG • 2026
-            </p>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="font-size: 2.5rem;">🥂</div>
+                <div>
+                    <h1 style="color: #0f172a; margin: 0; font-size: 1.75rem; font-weight: 600;">
+                        Controle de Bastão
+                    </h1>
+                    <p style="color: #64748b; margin: 0.25rem 0 0 0; font-size: 0.875rem; font-weight: 500;">
+                        Setor de Informática • TJMG
+                    </p>
+                </div>
+            </div>
         </div>
-        <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 8px; backdrop-filter: blur(10px);">
-            <div style="font-size: 3rem; line-height: 1;">{BASTAO_EMOJI}</div>
+        <div style="text-align: right;">
+            <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                Ano
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #2563eb;">
+                2026
+            </div>
         </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# Entrada rápida na fila
-col_quick1, col_quick2, col_quick3 = st.columns([2, 2, 1])
-with col_quick1:
-    st.markdown("**Entrada Rápida:**")
-with col_quick2:
-    novo_responsavel = st.selectbox("Selecione colaborador", options=["Selecione"] + COLABORADORES, 
-                                   label_visibility="collapsed", key="quick_enter")
-with col_quick3:
-    if st.button("Entrar na Fila", help="Ficar disponível imediatamente", use_container_width=True):
-        if novo_responsavel and novo_responsavel != "Selecione":
-            toggle_queue(novo_responsavel)
-            st.session_state.colaborador_selectbox = novo_responsavel
-            st.success(f"✅ {novo_responsavel} entrou na fila!")
-            st.rerun()
+# ==================== ENTRADA RÁPIDA ====================
+with st.container():
+    col_label, col_select, col_button = st.columns([1, 3, 1])
+    
+    with col_label:
+        st.markdown("**Entrada Rápida**")
+    
+    with col_select:
+        novo_responsavel = st.selectbox(
+            "Selecione colaborador", 
+            options=["Selecione..."] + COLABORADORES,
+            label_visibility="collapsed", 
+            key="quick_enter"
+        )
+    
+    with col_button:
+        if st.button("➕ Entrar", help="Entrar na fila imediatamente", use_container_width=True, type="primary"):
+            if novo_responsavel and novo_responsavel != "Selecione...":
+                toggle_queue(novo_responsavel)
+                st.session_state.colaborador_selectbox = novo_responsavel
+                st.success(f"✅ {novo_responsavel} entrou na fila!")
+                save_state()
+                st.rerun()
 
 st.markdown("---")
+
 
 # Auto-refresh
 st_autorefresh(interval=8000, key='auto_rerun_key')
@@ -1086,8 +1005,8 @@ with col_principal:
         st.markdown(f"""
         <div style="background: white; border: 2px solid #e2e8f0; padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
             <div style="display: flex; align-items: center; gap: 1.5rem;">
-                <div style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); width: 80px; height: 80px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    {BASTAO_EMOJI}
+                <div style="background: #2563eb; width: 80px; height: 80px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 48px;">
+                    🥂
                 </div>
                 <div style="flex: 1;">
                     <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin-bottom: 0.5rem;">
@@ -1101,17 +1020,44 @@ with col_principal:
         </div>
         """, unsafe_allow_html=True)
         
+        # Métricas em cards separados
+        col_metric1, col_metric2 = st.columns(2)
+        
         duration = timedelta()
         if st.session_state.bastao_start_time:
             duration = datetime.now() - st.session_state.bastao_start_time
         
-        col_metric1, col_metric2 = st.columns(2)
         with col_metric1:
-            st.metric("⏱️ Tempo com Bastão", format_time_duration(duration))
+            st.markdown(f"""
+            <div style="background: white; border: 1px solid #e2e8f0; padding: 1.25rem; border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                <div style="color: #64748b; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">
+                    ⏱️ Tempo com Bastão
+                </div>
+                <div style="color: #0f172a; font-size: 1.5rem; font-weight: 700;">
+                    {format_time_duration(duration)}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        
         with col_metric2:
-            st.metric("🔄 Rodadas Hoje", st.session_state.bastao_counts.get(responsavel, 0))
+            rodadas = st.session_state.bastao_counts.get(responsavel, 0)
+            st.markdown(f"""
+            <div style="background: white; border: 1px solid #e2e8f0; padding: 1.25rem; border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                <div style="color: #64748b; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem;">
+                    🔄 Rodadas Hoje
+                </div>
+                <div style="color: #0f172a; font-size: 1.5rem; font-weight: 700;">
+                    {rodadas}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
     else:
-        st.info("ℹ️ Nenhum colaborador com o bastão no momento")
+        st.markdown("""
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 1.5rem; border-radius: 10px; text-align: center;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
+            <div style="color: #1e40af; font-weight: 500;">Nenhum colaborador com o bastão</div>
+        </div>
+        """, unsafe_allow_html=True)
     
     st.markdown("##")
     st.header("Próximos da Fila")
