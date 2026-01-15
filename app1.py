@@ -44,7 +44,6 @@ REG_SISTEMA_OPCOES = ["Conveniados", "Outros", "Eproc", "Themis", "JPE", "SIAP"]
 REG_CANAL_OPCOES = ["Presencial", "Telefone", "Email", "Whatsapp", "Outros"]
 REG_DESFECHO_OPCOES = ["Resolvido - Informática", "Escalonado"]
 
-OPCOES_ATIVIDADES_STATUS = ["HP", "E-mail", "WhatsApp Plantão", "Treinamento", "Homologação", "Redação Documentos", "Outros"]
 
 # Emoji do Bastão
 BASTAO_EMOJI = "🥂"
@@ -62,7 +61,6 @@ def save_state():
             'status_texto': st.session_state.status_texto,
             'bastao_start_time': st.session_state.bastao_start_time.isoformat() if st.session_state.bastao_start_time else None,
             'bastao_counts': st.session_state.bastao_counts,
-            'auxilio_ativo': st.session_state.get('auxilio_ativo', False),
             'simon_ranking': st.session_state.simon_ranking,
             'daily_logs': st.session_state.daily_logs,
             'checks': {nome: st.session_state.get(f'check_{nome}', False) for nome in COLABORADORES}
@@ -83,7 +81,6 @@ def load_state():
             st.session_state.bastao_start_time = datetime.fromisoformat(time_str) if time_str else None
             
             st.session_state.bastao_counts = data.get('bastao_counts', {nome: 0 for nome in COLABORADORES})
-            st.session_state.auxilio_ativo = data.get('auxilio_ativo', False)
             st.session_state.simon_ranking = data.get('simon_ranking', [])
             st.session_state.daily_logs = data.get('daily_logs', [])
             
@@ -353,7 +350,6 @@ def init_session_state():
         'status_texto': {nome: 'Indisponível' for nome in COLABORADORES},
         'bastao_start_time': None,
         'bastao_counts': {nome: 0 for nome in COLABORADORES},
-        'auxilio_ativo': False,
         'active_view': None,
         'chamado_guide_step': 0,
         'simon_sequence': [],
@@ -893,9 +889,6 @@ def handle_chamado_submission():
     st.toast("Rascunho salvo localmente!", icon="✅")
     st.session_state.chamado_guide_step = 0
 
-def on_auxilio_change():
-    pass
-
 def manual_rerun():
     st.rerun()
 
@@ -1080,61 +1073,13 @@ with col_principal:
     row2_c1, row2_c2, row2_c3, row2_c4, row2_c5 = st.columns(5)
     
     row1_c1.button('🎯 Passar', on_click=rotate_bastao, use_container_width=True, help='Passa o bastão.', type='primary')
-    row1_c2.button('📋 Atividades', on_click=toggle_view, args=('menu_atividades',), use_container_width=True)
     
-    row2_c1.button('📅 Reunião', on_click=toggle_view, args=('menu_reuniao',), use_container_width=True)
-    row2_c2.button('🍽️ Almoço', on_click=update_status, args=('Almoço', True,), use_container_width=True)
-    row2_c3.button('🎙️ Sessão', on_click=toggle_view, args=('menu_sessao',), use_container_width=True)
-    row2_c4.button('🚶 Saída', on_click=update_status, args=('Saída rápida', True,), use_container_width=True)
-    row2_c5.button('👤 Ausente', on_click=update_status, args=('Ausente', True,), use_container_width=True)
+    row2_c1.button('🍽️ Almoço', on_click=update_status, args=('Almoço', True,), use_container_width=True)
+    row2_c2.button('🎙️ Sessão', on_click=toggle_view, args=('menu_sessao',), use_container_width=True)
+    row2_c3.button('🚶 Saída', on_click=update_status, args=('Saída rápida', True,), use_container_width=True)
+    row2_c4.button('👤 Ausente', on_click=update_status, args=('Ausente', True,), use_container_width=True)
     
     # Menus contextuais
-    if st.session_state.active_view == 'menu_atividades':
-        with st.container(border=True):
-            st.markdown("### Selecione a Atividade")
-            c_a1, c_a2 = st.columns([1, 1], vertical_alignment="bottom")
-            with c_a1:
-                atividades_escolhidas = st.multiselect("Tipo:", OPCOES_ATIVIDADES_STATUS)
-            with c_a2:
-                texto_extra = st.text_input("Detalhe:", placeholder="Ex: Assunto específico...")
-            
-            col_confirm_1, col_confirm_2 = st.columns(2)
-            with col_confirm_1:
-                if st.button("Confirmar Atividade", type="primary", use_container_width=True):
-                    if atividades_escolhidas:
-                        str_atividades = ", ".join(atividades_escolhidas)
-                        status_final = f"Atividade: {str_atividades}"
-                        if texto_extra:
-                            status_final += f" - {texto_extra}"
-                        update_status(status_final)
-                        st.session_state.active_view = None
-                        st.rerun()
-                    else:
-                        st.warning("Selecione pelo menos uma atividade.")
-            with col_confirm_2:
-                if st.button("Cancelar", use_container_width=True, key='cancel_act'):
-                    st.session_state.active_view = None
-                    st.rerun()
-    
-    if st.session_state.active_view == 'menu_reuniao':
-        with st.container(border=True):
-            st.markdown("### Detalhes da Reunião")
-            reuniao_desc = st.text_input("Qual reunião?", placeholder="Ex: Alinhamento equipe...")
-            col_r1, col_r2 = st.columns(2)
-            with col_r1:
-                if st.button("Confirmar Reunião", type="primary", use_container_width=True):
-                    if reuniao_desc:
-                        status_final = f"Reunião: {reuniao_desc}"
-                        update_status(status_final)
-                        st.session_state.active_view = None
-                        st.rerun()
-                    else:
-                        st.warning("Digite o nome da reunião.")
-            with col_r2:
-                if st.button("Cancelar", use_container_width=True, key='cancel_reuniao'):
-                    st.session_state.active_view = None
-                    st.rerun()
-    
     if st.session_state.active_view == 'menu_sessao':
         with st.container(border=True):
             st.markdown("### Detalhes da Sessão")
@@ -1407,10 +1352,6 @@ with col_principal:
 # Coluna lateral (Disponibilidade)
 with col_disponibilidade:
     st.markdown("###")
-    st.toggle("Auxílio HP/Emails/Whatsapp", key='auxilio_ativo', on_change=on_auxilio_change)
-    if st.session_state.get('auxilio_ativo'):
-        st.warning("⚠️ HP/Emails/Whatsapp irão para bastão")
-    st.markdown("---")
     st.header('Status dos(as) Colaboradores(as)')
     
     # Listas de status
@@ -1449,9 +1390,6 @@ with col_disponibilidade:
             if match:
                 ui_lists['sessao_especifica'].append((nome, match.group(1).split('|')[0].strip()))
         
-        if 'Reunião:' in status:
-            match = re.search(r'Reunião: (.*)', status)
-            if match:
                 ui_lists['reuniao_especifica'].append((nome, match.group(1).split('|')[0].strip()))
         
         if 'Atividade:' in status:
@@ -1512,7 +1450,6 @@ with col_disponibilidade:
         st.markdown('---')
     
     render_section_detalhada('Em Demanda', '📋', ui_lists['atividade_especifica'], 'orange', 'Atividade')
-    render_section_detalhada('Reuniões', '📅', ui_lists['reuniao_especifica'], 'violet', 'Reunião')
     render_section_simples('Almoço', '🍽️', ui_lists['almoco'], 'red')
     render_section_detalhada('Sessão', '🎙️', ui_lists['sessao_especifica'], 'green', 'Sessão')
     render_section_simples('Saída rápida', '🚶', ui_lists['saida'], 'red')
