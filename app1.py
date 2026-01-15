@@ -46,12 +46,8 @@ REG_DESFECHO_OPCOES = ["Resolvido - Informática", "Escalonado"]
 
 OPCOES_ATIVIDADES_STATUS = ["HP", "E-mail", "WhatsApp Plantão", "Treinamento", "Homologação", "Redação Documentos", "Outros"]
 
-# GIFs e Recursos
-GIF_BASTAO_HOLDER = "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3Uwazd5cnNra2oxdDkydjZkcHdqcWN2cng0Y2N0cmNmN21vYXVzMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3rXs5J0hZkXwTZjuvM/giphy.gif"
+# Emoji do Bastão
 BASTAO_EMOJI = "🥂"
-GIF_URL_WARNING = 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2pjMDN0NGlvdXp1aHZ1ejJqMnY5MG1yZmN0d3NqcDl1bTU1dDJrciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/fXnRObM8Q0RkOmR5nf/giphy.gif'
-GIF_URL_ROTATION = 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmx4azVxbGt4Mnk1cjMzZm5sMmp1YThteGJsMzcyYmhsdmFoczV0aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JpkZEKWY0s9QI4DGvF/giphy.gif'
-GIF_URL_NEDRY = 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGNkMGx3YnNkcXQ2bHJmNTZtZThraHhuNmVoOTNmbG0wcDloOXAybiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7kyWoqTue3po4/giphy.gif'
 
 # ============================================
 # FUNÇÕES AUXILIARES
@@ -246,11 +242,21 @@ def rotate_bastao():
     st.session_state.gif_warning = False
     st.session_state.rotation_gif_start_time = None
     
+    # Verificar quem está selecionado
+    selected = st.session_state.get('colaborador_selectbox')
+    
     queue = st.session_state.bastao_queue
     current_holder = next((c for c, s in st.session_state.status_texto.items() if 'Bastão' in s), None)
     
     if not current_holder:
         st.warning('⚠️ Ninguém tem o bastão no momento.')
+        return
+    
+    # VALIDAÇÃO: só quem tem o bastão pode passar
+    if selected != current_holder:
+        st.error(f'❌ Somente **{current_holder}** pode passar o bastão!')
+        st.info(f'💡 Selecione "{current_holder}" no menu acima para passar o bastão.')
+        st.session_state.gif_warning = True
         return
     
     if not queue or current_holder not in queue:
